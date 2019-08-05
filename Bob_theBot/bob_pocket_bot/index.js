@@ -55,20 +55,19 @@ bot.on("message", async message => {
                 bot.sendMessage(message.chat.id, "Algo aquí no va bien... prueba a no dejar espacios en el nombre de la cuenta atras :grin:");
                 return;
             } else {
-                message.delete().catch(O_o => {});
                 let fechadecdaux = '"' + setFecha[2] + '"';
                 let cat = '"' + setFecha[0] + '"';
                 let json_cd = '{"codw":' + "" + fechadecdaux + ',' +
                     '"categoria":' + cat.toLowerCase() +
                     '}';
-                if (json_cd.categoria === "cumple") {
+                if (cat === '"cumple"') {
                     fs.writeFile("../Bob_brain/countdowns/cumples/Cumple_" + setFecha[1] + ".json", json_cd, function (err, result) {
                         if (err) console.log('error', err);
                         if (result) {
                             bot.sendMessage(message.chat.id, "¡He creado la cuenta atras!");
                         }
                     });
-                } else if (json_cd.categoria === "evento") {
+                } else if (cat === '"evento"') {
                     fs.writeFile("../Bob_brain/countdowns/eventos/Evento_" + setFecha[0] + ".json", json_cd, function (err, result) {
                         if (err) console.log('error', err);
                         if (result) {
@@ -156,7 +155,8 @@ bot.on("message", async message => {
                         bot.sendMessage(message.chat.id, "No he encontrado cumpleaños :confused:");
 
                     }
-
+                    break;
+                    
                     default:
                         bot.sendMessage(message.chat.id, "No he encontrado nada bajo la categoria: " + subver + " ¡Prueba con cumples, eventos o todo!");
 
@@ -189,7 +189,7 @@ bot.on("message", async message => {
                         }
                         break;
                     }
-                    let nombre = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras.substring(1, cuentaAtras.length).toLowerCase();
+                    let nombre = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras[1].substring(1, cuentaAtras[1].length).toLowerCase();
                     let jsoncumple = require("../Bob_brain/countdowns/cumples/Cumple_" + nombre + ".json");
 
                     bot.sendMessage(message.chat.id, "Dejame calcular...");
@@ -223,7 +223,7 @@ bot.on("message", async message => {
                         }
                         break;
                     }
-                    let nombreev = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras.substring(1, cuentaAtras.length).toLowerCase();
+                    let nombreev = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras[1].substring(1, cuentaAtras[1].length).toLowerCase();
                     let jsonevento = require("../Bob_brain/countdowns/eventos/Evento_" + nombreev + ".json");
 
                     bot.sendMessage(message.chat.id, "Dejame calcular...");
@@ -312,27 +312,25 @@ bot.on("message", async message => {
 cumples();
 
 function cumples() {
-    console.log('comprobando cumpleaños...')
     var today = new Date();
-    console.log("Dias para fin de año:" + diasPara(today, refactorDate("01/01/2020")))
-    var nextYear = String(Number(today.getFullYear()) + 1);
+    let currentyear = Number(today.getFullYear());
+    console.log("Dias para fin de año:" + diasPara(today, refactorDate("01/01/" + (currentyear + 1))));
 
-    var files = fs.readdirSync('../Bob_brain/countdowns/');
+    var files = fs.readdirSync('../Bob_brain/countdowns/cumples/');
     for (let item of files) {
-        let json3 = require("../Bob_brain/countdowns/" + item);
-        if (json3.categoria === "cumple" && diasPara(today, refactorDate(json3.codw)) < 0) {
-            var anio = Number(json3.codw.substring(6, json3.codw.length)) + 1;
+        let json3 = require("../Bob_brain/countdowns/cumples/" + item);
+        if (json3.categoria === "cumple" && diasPara(today, refactorDate(json3.codw)) <= 0) {
+            var anio = (currentyear + 1);
             var nuevaFecha = '"' + json3.codw.substring(0, 6) + anio + '"';
             let json_cd = '{"codw":' + "" + nuevaFecha + ',' +
                 '"categoria":' + '"' + json3.categoria + '"' +
                 '}';
-            fs.writeFile("../Bob_brain/countdowns/" + item, json_cd, function (err, result) {
+            fs.writeFile("../Bob_brain/countdowns/cumples/" + item, json_cd, function (err, result) {
                 if (err) console.log('error', err);
             });
         }
     }
 }
-
 function refactorDate(aux) {
     var caDate = new Date()
 
