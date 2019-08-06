@@ -63,17 +63,18 @@ bot.on("message", async message => {
                 if (cat === '"cumple"') {
                     fs.writeFile("../Bob_brain/countdowns/cumples/Cumple_" + setFecha[1] + ".json", json_cd, function (err, result) {
                         if (err) console.log('error', err);
-                        if (result) {
-                            bot.sendMessage(message.chat.id, "¡He creado la cuenta atras!");
-                        }
+                        if (result) {}
+
                     });
+                    bot.sendMessage(message.chat.id, "¡He creado la cuenta atras!");
+
                 } else if (cat === '"evento"') {
-                    fs.writeFile("../Bob_brain/countdowns/eventos/Evento_" + setFecha[0] + ".json", json_cd, function (err, result) {
+                    fs.writeFile("../Bob_brain/countdowns/eventos/Evento_" + setFecha[1] + ".json", json_cd, function (err, result) {
                         if (err) console.log('error', err);
-                        if (result) {
-                            bot.sendMessage(message.chat.id, "¡He creado la cuenta atras!");
-                        }
+                        if (result) {}
                     });
+                    bot.sendMessage(message.chat.id, "¡He creado la cuenta atras!");
+
                 } else {
                     await bot.sendMessage(message.chat.id, "Creo que no entiendo esa categoría :surprised: Te recuerdo que el formato es: .crear (categoria:'cumple' o 'evento') (nombre de persona o evento) (fecha en dd/mm/aaaa)");
                 }
@@ -105,15 +106,15 @@ bot.on("message", async message => {
                     break;
 
                 case "eventos":
-                    var filesev = fs.readdirSync('../Bob_brain/countdowns/eventos/');
-                    cant = 0;
+                    var cant = 0;
+                    var filesev = fs.readdirSync('../Bob_brain/countdowns/eventos');
                     bot.sendMessage(message.chat.id, "Dejame mirar por aquí...");
 
                     for (let item of filesev) {
                         let auxjson = require("../Bob_brain/countdowns/eventos/" + item);
                         if (auxjson.categoria === "evento") {
                             cant++;
-                            var m = await bot.sendMessage(message.chat.id, "El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
+                            var m = await bot.sendMessage(message.chat.id, "El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
                         }
                     }
                     if (cant == 0) {
@@ -125,7 +126,6 @@ bot.on("message", async message => {
                     break;
 
                 case "todo":
-                case "":
                     bot.sendMessage(message.chat.id, "Eventos Planeados:");
 
                     var files = fs.readdirSync('../Bob_brain/countdowns/eventos/');
@@ -156,9 +156,9 @@ bot.on("message", async message => {
 
                     }
                     break;
-                    
-                    default:
-                        bot.sendMessage(message.chat.id, "No he encontrado nada bajo la categoria: " + subver + " ¡Prueba con cumples, eventos o todo!");
+
+                default:
+                    bot.sendMessage(message.chat.id, "No he encontrado nada bajo la categoria: " + subver + " ¡Prueba con cumples, eventos o todo!");
 
             }
             break;
@@ -169,7 +169,7 @@ bot.on("message", async message => {
             var today = new Date();
 
             switch (cuentaAtras[0].toLowerCase()) {
-                case "cumples":
+                case "cumple":
                     if (cuentaAtras[1] === "") {
                         bot.sendMessage(message.chat.id, "No puedes dejarme sin saber de quien es el cumple :sad:");
                         var cant = 0;
@@ -203,7 +203,7 @@ bot.on("message", async message => {
                     }
                     break;
 
-                case "eventos":
+                case "evento":
                     if (cuentaAtras[1] === "") {
                         bot.sendMessage(message.chat.id, "No puedes dejarme sin saber de que evento me hablas :sad:");
                         var cant = 0;
@@ -280,7 +280,7 @@ bot.on("message", async message => {
             const opcionesAyuda = args.join(" ");
             switch (opcionesAyuda) {
                 default:
-                    bot.sendMessage(message.chat.id, "Mis comandos son: \n crear \n ver \n cuantoquedapara \n d (tirar dados) \n limpia \n Puedes saber mas de cada uno usando 'help' + comando");
+                    bot.sendMessage(message.chat.id, "Mis comandos son: \n crear \n ver \n cuantoquedapara \n d (tirar dados) \n Puedes saber mas de cada uno usando 'help' + comando");
                     break;
 
                 case "crear":
@@ -294,9 +294,6 @@ bot.on("message", async message => {
                     break;
                 case "d":
                     bot.sendMessage(message.chat.id, "d + 'numeroDeDados'd'nºdecaras': te lanzo el numero de dados que quieras con las caras que decidas");
-                    break;
-                case "limpia":
-                    bot.sendMessage(message.chat.id, "limpia + numero de mensajes que quieres borrar + veces que se repite : borra hasta 99 mensajes del chat actual... no puedo borrar mas de 100 pero puedo hacer una trampa fea que Jose conoce");
                     break;
             }
             break;
@@ -331,6 +328,7 @@ function cumples() {
         }
     }
 }
+
 function refactorDate(aux) {
     var caDate = new Date()
 

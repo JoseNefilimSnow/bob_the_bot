@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const config = require("../Bob_brain/configDis.json");
 const bot = new Discord.Client();
 
-const fetch = require("node-fetch");
 var fs = require('fs');
 
 console.log('Empieza a acceder en el chat:');;
@@ -11,6 +10,9 @@ bot.on("ready", () => {
     //Cuando se inicia, el bot imprimira lo siguiente:
     console.log(`Bob Esta Dentro`);
     console.log('¡Gracias por el Host Alberto!');
+    cumples();
+    eventos();
+
     // Ahora añadimos un estado por los memes al bot:
     bot.user.setActivity("¡ '.help' para ayuda!");
 });
@@ -59,16 +61,16 @@ bot.on("message", async message => {
                     '}';
                 if (cat === '"cumple"') {
                     fs.writeFile("../Bob_brain/countdowns/cumples/Cumple_" + setFecha[1] + ".json", json_cd, function (err, result) {
-                        message.channel.send("¡He creado la cuenta atras!");
                         if (err) console.log('error', err);
                         if (result) {}
+                        message.channel.send("¡He creado la cuenta atras!");
                     });
                 } else if (cat === '"evento"') {
                     fs.writeFile("../Bob_brain/countdowns/eventos/Evento_" + setFecha[1] + ".json", json_cd, function (err, result) {
-                        message.channel.send("¡He creado la cuenta atras!");
                         if (err) console.log('error', err);
                         if (result) {}
                     });
+                    message.channel.send("¡He creado la cuenta atras!");
                 } else {
                     await message.channel.send("Creo que no entiendo esa categoría :surprised: Te recuerdo que el formato es: .crear (categoria:'cumple' o 'evento') (nombre de persona o evento) (fecha en dd/mm/aaaa)");
                 }
@@ -100,15 +102,15 @@ bot.on("message", async message => {
                     break;
 
                 case "eventos":
-                    var filesev = fs.readdirSync('../Bob_brain/countdowns/eventos/');
-                    cant = 0;
+                    var cant = 0;
+                    var filesev = fs.readdirSync('../Bob_brain/countdowns/eventos');
                     message.channel.send("Dejame mirar por aquí...");
 
                     for (let item of filesev) {
                         let auxjson = require("../Bob_brain/countdowns/eventos/" + item);
                         if (auxjson.categoria === "evento") {
                             cant++;
-                            var m = await message.channel.send("El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
+                            var m = await message.channel.send("El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
                         }
                     }
                     if (cant == 0) {
@@ -120,7 +122,6 @@ bot.on("message", async message => {
                     break;
 
                 case "todo":
-                case "":
                     message.channel.send("Eventos Planeados:");
 
                     var files = fs.readdirSync('../Bob_brain/countdowns/eventos/');
@@ -184,7 +185,7 @@ bot.on("message", async message => {
                         }
                         break;
                     }
-                    let nombre =cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras[1].substring(1, cuentaAtras[1].length).toLowerCase();
+                    let nombre = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras[1].substring(1, cuentaAtras[1].length).toLowerCase();
                     let jsoncumple = require("../Bob_brain/countdowns/cumples/Cumple_" + nombre + ".json");
 
                     message.channel.send("Dejame calcular...");
@@ -247,7 +248,7 @@ bot.on("message", async message => {
             let count = 0;
 
             console.log(opcionesDado);
-            
+
             while (opcionesDado.charAt(count) != 'd') {
                 numDados += opcionesDado.charAt(count);
                 count++;
@@ -305,14 +306,15 @@ bot.on("message", async message => {
                             indice++;
                         }
                         let json_r = '{"recordatorio":' + recordatorio + ',"persona":' + "" + persona + ',' +
-                            '"msg":' + '"' + msg + '"' + ',"hora": "' + hora + '"' +
+                            '"msg":' + '"' + msg + '"' + ',"hora": "' + hora + '"' + ',"estado": "' + "activo" + '"' +
                             '}';
                         fs.writeFile("../Bob_brain/recordatorios/" + subcomando[1] + ".json", json_r, function (err, result) {
                             if (err) console.log('error', err);
                             if (result) {
-                                message.channel.send("He creado el recordatorio");
+
                             }
                         });
+                        message.channel.send("He creado el recordatorio");
                     }
                     break;
                 case "ver":
@@ -332,7 +334,9 @@ bot.on("message", async message => {
                                     msg = msg + auxjson.msg.charAt(i);
                                 }
                             }
-                            var m = await message.channel.send("Tengo un recodatorio para " + "<@" + auxjson.persona + ">" + "\n Con el mensaje: " + msg + "\n y se repite a las " + auxjson.hora);
+                            if (auxjson.estado !== "innactivo") {
+                                var m = await message.channel.send("Tengo un recodatorio para " + "<@" + auxjson.persona + ">" + "\n Con el mensaje: " + msg + "\n y se repite a las " + auxjson.hora);
+                            }
                         }
                         if (cant == 0) {
                             message.channel.send("No he encontrado nada :confused:");
@@ -360,7 +364,7 @@ bot.on("message", async message => {
                                         msg = msg + auxjson.msg.charAt(i);
                                     }
                                 }
-                                if ('"' + user(subcomando[1]) + '"' === auxjson.persona) {
+                                if ('"' + user(subcomando[1]) + '"' === auxjson.persona && auxjson.estado !== "innacctivo") {
                                     var m = await message.channel.send(msg + "\n y se repite a las " + auxjson.hora);
                                 }
                             }
@@ -372,38 +376,41 @@ bot.on("message", async message => {
                     }
                     break;
 
-                // case "cerrar":
-                //     var files = fs.readdirSync('../Bob_brain/recordatorios/');
-                //     cant = 0;
-                //     message.channel.send("¿Cual quieres cerrar? Usa .recordatorio cerrar + num");
-                //     if (Number(subcomando[1])) {
-                //         let del = Number(subcomando[1]);
-                //         for (let item of files) {
-                //             if (del == 0) {
-                //                 fs.unlink('../Bob_brain/recordatorios/' + item);
-                //                 message.channel.send("Borrado!");
+                case "cerrar":
+                    var files = fs.readdirSync('../Bob_brain/recordatorios/');
+                    message.channel.send("¿Cual quieres cerrar? Usa .recordatorio cerrar + nombre del recordatorio tal y como se presenta");
+                    if (subcomando[1] != null) {
+                        let auxjson = require("../Bob_brain/recordatorios/" + subcomando[1] + ".json");
+                        if (auxjson == null) {
+                            message.channel.send("No existe el recordatorio");
+                        } else {
+                            auxjson.estado = "innactivo";
+                            fs.writeFile("../Bob_brain/recordatorios/" + subcomando[1] + ".json", JSON.stringify(auxjson), function (err, result) {
+                                if (err) console.log('error', err);
+                                if (result) {
 
-                //             }
-                //             del--;
-                //         }
-                //         break;
-                //     }
-                //     for (let item of files) {
-                //         let auxjson = require("../Bob_brain/recordatorios/" + item);
-                //         cant++;
-                //         let msg = "";
-                //         for (let i = 0; i < auxjson.msg.length; i++) {
-                //             if (auxjson.msg.charAt(i) == '_') {
-                //                 msg = msg + " ";
-                //             } else {
-                //                 msg = msg + auxjson.msg.charAt(i);
-                //             }
-                //         }
-                //         var m = await message.channel.send(cant + ". " + msg);
+                                }
+                            });
+                            message.channel.send("He deshabilitado el recordatorio");
+                        }
+                        break;
+                    }
+                    for (let item of files) {
+                        let auxjson = require("../Bob_brain/recordatorios/" + item);
+                        let msg = "";
+                        for (let i = 0; i < auxjson.msg.length; i++) {
+                            if (auxjson.msg.charAt(i) == '_') {
+                                msg = msg + " ";
+                            } else {
+                                msg = msg + auxjson.msg.charAt(i);
+                            }
+                        }
+                        if (auxjson.estado !== "innactivo") {
+                            var m = await message.channel.send("RECORDATORIO: " + item.substring(0, item.length - 5) + " ; MENSAJE:" + msg);
+                        }
 
-                //     }
-
-                //     break;
+                    }
+                    break;
             }
             break;
 
@@ -442,7 +449,6 @@ bot.on("message", async message => {
 bot.login(config.token);
 
 //-----------------------Funciones del Bot ;)----------------------------------//
-cumples();
 
 function cumples() {
     var today = new Date();
@@ -452,16 +458,11 @@ function cumples() {
     var files = fs.readdirSync('../Bob_brain/countdowns/cumples/');
     for (let item of files) {
         let json3 = require("../Bob_brain/countdowns/cumples/" + item);
+        if (diasPara(today, refactorDate(json3.codw)) == 0) {
+            notificar(item.substring(7, item.length - 5), "felicitar");
+        }
         if (json3.categoria === "cumple" && diasPara(today, refactorDate(json3.codw)) <= 0) {
-            if (diasPara(today, refactorDate(json3.codw)) < 0) {
-                let aviso = bot.channels.get('607821527404118022');
-                aviso.send(user(item.substring(7, item.length - 5).toLowerCase()) + ": " + "Feliz Cumpleaños!!!!!!1010101 (retrasadas jeje)");
 
-            } else if (diasPara(today, refactorDate(json3.codw)) == 0) {
-                let aviso = bot.channels.get('607821527404118022');
-                aviso.send(user(item.substring(7, item.length - 5).toLowerCase()) + ": " + "Feliz Cumpleaños!!!!!!1010101");
-
-            }
             var anio = (currentyear + 1);
             var nuevaFecha = '"' + json3.codw.substring(0, 6) + anio + '"';
             let json_cd = '{"codw":' + "" + nuevaFecha + ',' +
@@ -471,6 +472,33 @@ function cumples() {
                 if (err) console.log('error', err);
             });
         }
+    }
+}
+
+function eventos() {
+
+    var today = new Date();
+    var files = fs.readdirSync('../Bob_brain/countdowns/eventos/');
+
+    for (let item of files) {
+        let json3 = require("../Bob_brain/countdowns/eventos/" + item);
+        if (diasPara(today, refactorDate(json3.codw)) == 1 || diasPara(today, refactorDate(json3.codw)) == 0) {
+            notificar(item.substring(7, item.length - 5), "avisar");
+        }
+    }
+}
+
+function notificar(nombre, motivo) {
+    try {
+        switch (motivo) {
+            case 'felicitar':
+                bot.channels.get("607821527404118022").send("<@" + user(nombre) + ">: " + "Feliz cumple !!!!!!1001010");
+            case 'avisar':
+                bot.channels.get("607821527404118022").send("Recuerden el evento:" + nombre);
+        }
+
+    } catch (e) {
+        console.log("[ERROR]", e)
     }
 }
 
@@ -516,6 +544,7 @@ setInterval(function recuerdame() {
         }
         if (todayTime == "00:00") {
             cumples();
+            eventos();
         }
         console.log(msg);
         console.log('Es a las: ' + auxjson.hora)
@@ -532,10 +561,11 @@ setInterval(function recuerdame() {
 function user(nombre) {
     let id = "";
     console.log(nombre)
-    switch (nombre.replace("!", "")) {
+    switch (nombre.replace("!", "").toLowerCase()) {
 
+        case "yo":
         case "<@591398316726681630>":
-            id = "yo";
+            id = "591398316726681630";
             break;
 
         case "jose":
