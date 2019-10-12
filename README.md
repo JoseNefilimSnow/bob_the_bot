@@ -41,7 +41,3 @@ ping: muestra el ping con  Bob , y por extension cuanto lag se tiene con el orde
 Bob almacena objetos JSON con los campos necesarios!
 
 ## Cuaderno de batalla
-
-Existen algunos casos que se deben tratar como que el bot pueda llamar a sus propios metodos o el prefijo no se encuentre en la posición inicial para que funcionen los comandos pero estos dos casos han sido arreglados.
-
-Se requiere la adición del envio de un mensaje cuando exista un cambio de estado en los chats de voz
