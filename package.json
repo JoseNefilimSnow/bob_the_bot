@@ -1,0 +1,22 @@
+{
+  "name": "bob_the_mega_bot",
+  "version": "1.0.0",
+  "description": "So its bigger...",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "guri",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.1.0",
+    "ffmpeg": "0.0.4",
+    "fs-extra": "^8.1.0",
+    "http": "0.0.0",
+    "https": "^1.0.0",
+    "node-telegram-bot-api": "^0.30.0",
+    "nodemon": "^1.19.2",
+    "opusscript": "0.0.7"
+  }
+}
