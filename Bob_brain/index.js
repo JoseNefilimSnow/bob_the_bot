@@ -143,11 +143,11 @@ botDis.on("message", async message => {
 
                 case "cumples":
                     var cant = 0;
-                    var filescump = fs.readdirSync('./countdowns/cumples');
+                    var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
                     message.channel.send("Dejame mirar por aquí...");
 
                     for (let item of filescump) {
-                        let auxjson = require("./countdowns/cumples/" + item);
+                        let auxjson = require("Bob_brain/countdowns/cumples/" + item);
                         if (auxjson.categoria === "cumple") {
                             cant++;
                             var m = await message.channel.send("El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -163,11 +163,11 @@ botDis.on("message", async message => {
 
                 case "eventos":
                     var cant = 0;
-                    var filesev = fs.readdirSync('./countdowns/eventos');
+                    var filesev = fs.readdirSync("Bob_brain/countdowns/eventos");
                     message.channel.send("Dejame mirar por aquí...");
 
                     for (let item of filesev) {
-                        let auxjson = require("./countdowns/eventos/" + item);
+                        let auxjson = require("Bob_brain/countdowns/eventos/" + item);
                         if (auxjson.categoria === "evento") {
                             cant++;
                             var m = await message.channel.send("El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -184,10 +184,10 @@ botDis.on("message", async message => {
                 case "todo":
                     message.channel.send("Eventos Planeados:");
 
-                    var files = fs.readdirSync('./countdowns/eventos/');
+                    var files = fs.readdirSync("Bob_brain/countdowns/eventos/");
                     cant = 0;
                     for (let item of files) {
-                        let auxjson = require("./countdowns/eventos/" + item);
+                        let auxjson = require("Bob_brain/countdowns/eventos/" + item);
                         if (auxjson.categoria === "evento") {
                             cant++;
                             var m = await message.channel.send("El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -197,11 +197,11 @@ botDis.on("message", async message => {
                         message.channel.send("No he encontrado eventos :confused:");
                     }
                     var cant2 = 0;
-                    var filescump = fs.readdirSync('./countdowns/cumples');
+                    var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
 
                     message.channel.send("Cumpleaños Guardados:");
                     for (let item of filescump) {
-                        let auxjson = require("./countdowns/cumples/" + item);
+                        let auxjson = require("Bob_brain/countdowns/cumples/" + item);
                         if (auxjson.categoria === "cumple") {
                             cant2++;
                             var m = await message.channel.send("El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -229,11 +229,11 @@ botDis.on("message", async message => {
                     if (cuentaAtras[1] === "") {
                         message.channel.send("No puedes dejarme sin saber de quien es el cumple :sad:");
                         var cant = 0;
-                        var files = fs.readdirSync('./countdowns/cumples');
+                        var files = fs.readdirSync('Bob_brain/countdowns/cumples');
 
                         message.channel.send("Estos son los posibles");
                         for (let item of files) {
-                            let auxjson = require("./countdowns/cumples/" + item);
+                            let auxjson = require("Bob_brain/countdowns/cumples/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant++;
                                 var m = await message.channel.send(item.substring(7, item.length - 5));
@@ -263,11 +263,11 @@ botDis.on("message", async message => {
                     if (cuentaAtras[1] === "") {
                         message.channel.send("No puedes dejarme sin saber de que evento me hablas :sad:");
                         var cant = 0;
-                        var files = fs.readdirSync('./countdowns/eventos');
+                        var files = fs.readdirSync("Bob_brain/countdowns/eventos");
 
                         message.channel.send("Estos son los posibles");
                         for (let item of files) {
-                            let auxjson = require("./countdowns/eventos/" + item);
+                            let auxjson = require("Bob_brain/countdowns/eventos/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant++;
                                 var m = await message.channel.send(item.substring(7, item.length - 5));
@@ -690,11 +690,11 @@ botTel.on("message", async message => {
                 switch (subver) {
                     case "cumples":
                         var cant = 0;
-                        var filescump = fs.readdirSync('./countdowns/cumples');
+                        var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
 
                         for (let item of filescump) {
-                            let auxjson = require("./countdowns/cumples/" + item);
+                            let auxjson = require("Bob_brain/countdowns/cumples/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant++;
                                 var m = await botTel.sendMessage(message.chat.id, "El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -710,11 +710,11 @@ botTel.on("message", async message => {
 
                     case "eventos":
                         var cant = 0;
-                        var filesev = fs.readdirSync('./countdowns/eventos');
+                        var filesev = fs.readdirSync("Bob_brain/countdowns/eventos");
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
 
                         for (let item of filesev) {
-                            let auxjson = require("./countdowns/eventos/" + item);
+                            let auxjson = require("Bob_brain/countdowns/eventos/" + item);
                             if (auxjson.categoria === "evento") {
                                 cant++;
                                 var m = await botTel.sendMessage(message.chat.id, "El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -731,10 +731,10 @@ botTel.on("message", async message => {
                     case "todo":
                         botTel.sendMessage(message.chat.id, "Eventos Planeados:");
 
-                        var files = fs.readdirSync('./countdowns/eventos/');
+                        var files = fs.readdirSync("Bob_brain/countdowns/eventos");
                         cant = 0;
                         for (let item of files) {
-                            let auxjson = require("./countdowns/eventos/" + item);
+                            let auxjson = require("Bob_brain/countdowns/eventos/" + item);
                             if (auxjson.categoria === "evento") {
                                 cant++;
                                 var m = await botTel.sendMessage(message.chat.id, "El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -744,11 +744,11 @@ botTel.on("message", async message => {
                             botTel.sendMessage(message.chat.id, "No he encontrado eventos :confused:");
                         }
                         var cant2 = 0;
-                        var filescump = fs.readdirSync('./countdowns/cumples');
+                        var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
 
                         botTel.sendMessage(message.chat.id, "Cumpleaños Guardados:");
                         for (let item of filescump) {
-                            let auxjson = require("./countdowns/cumples/" + item);
+                            let auxjson = require("Bob_brain/countdowns/cumples/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant2++;
                                 var m = await botTel.sendMessage(message.chat.id, "El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -776,11 +776,11 @@ botTel.on("message", async message => {
                         if (cuentaAtras[1] === "") {
                             botTel.sendMessage(message.chat.id, "No puedes dejarme sin saber de quien es el cumple :sad:");
                             var cant = 0;
-                            var files = fs.readdirSync('./countdowns/cumples');
+                            var files = fs.readdirSync('Bob_brain/countdowns/cumples');
 
                             botTel.sendMessage(message.chat.id, "Estos son los posibles");
                             for (let item of files) {
-                                let auxjson = require("./countdowns/cumples/" + item);
+                                let auxjson = require("Bob_brain/countdowns/cumples/" + item);
                                 if (auxjson.categoria === "cumple") {
                                     cant++;
                                     var m = await botTel.sendMessage(message.chat.id, item.substring(7, item.length - 5));
@@ -810,11 +810,11 @@ botTel.on("message", async message => {
                         if (cuentaAtras[1] === "") {
                             botTel.sendMessage(message.chat.id, "No puedes dejarme sin saber de que evento me hablas :sad:");
                             var cant = 0;
-                            var files = fs.readdirSync('./countdowns/eventos');
+                            var files = fs.readdirSync("Bob_brain/countdowns/eventos");
 
                             botTel.sendMessage(message.chat.id, "Estos son los posibles");
                             for (let item of files) {
-                                let auxjson = require("./countdowns/eventos/" + item);
+                                let auxjson = require("Bob_brain/countdowns/eventos/" + item);
                                 if (auxjson.categoria === "cumple") {
                                     cant++;
                                     var m = await botTel.sendMessage(message.chat.id, item.substring(7, item.length - 5));
@@ -1113,7 +1113,7 @@ function cumples() {
 
     var files = fs.readdirSync('Bob_brain/countdowns/cumples');
     for (let item of files) {
-        let json3 = require("./countdowns/cumples/" + item);
+        let json3 = require("Bob_brain/countdowns/cumples/" + item);
         if (service.diasPara(today, service.refactorDate(json3.codw)) == 0) {
             notificar(item.substring(7, item.length - 5), "felicitar");
         }
@@ -1124,7 +1124,7 @@ function cumples() {
             let json_cd = '{"codw":' + nuevaFecha + ',' +
                 '"categoria":' + json3.categoria +
                 '}';
-            fs.writeJSON("./countdowns/cumples/" + item, JSON.parse(json_cd), function (err, result) {
+            fs.writeJSON("Bob_brain/countdowns/cumples/" + item, JSON.parse(json_cd), function (err, result) {
                 if (err) console.log('error', err);
             });
         }
@@ -1135,10 +1135,10 @@ cumples();
 function eventos() {
 
     var today = new Date();
-    var files = fs.readdirSync('./countdowns/eventos');
+    var files = fs.readdirSync("Bob_brain/countdowns/eventos");
 
     for (let item of files) {
-        let json3 = require("./countdowns/eventos/" + item);
+        let json3 = require("Bob_brain/countdowns/eventos/" + item);
         if (service.diasPara(today, service.refactorDate(json3.codw)) == 1 || service.diasPara(today, service.refactorDate(json3.codw)) == 0) {
             console.log("Evento: " + item.substring(7, item.length - 5) + " --aviso--");
         }
@@ -1194,11 +1194,11 @@ function notificar(nombre, motivo) {
 
 //             // case "eventos":
 //             //     var cant = 0;
-//             //     var filesev = fs.readdirSync('./countdowns/eventos');
+//             //     var filesev = fs.readdirSync("Bob_brain/countdowns/eventos");
 //             //     message.channel.send("Dejame mirar por aquí...");
 
 //             //     for (let item of filesev) {
-//             //         let auxjson = require("./countdowns/eventos/" + item);
+//             //         let auxjson = require("Bob_brain/countdowns/eventos/" + item);
 //             //         if (auxjson.categoria === "evento") {
 //             //             cant++;
 //             //             var m = await message.channel.send("El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -1215,10 +1215,10 @@ function notificar(nombre, motivo) {
 //             // case "todo":
 //             //     message.channel.send("Eventos Planeados:");
 
-//             //     var files = fs.readdirSync('./countdowns/eventos/');
+//             //     var files = fs.readdirSync("Bob_brain/countdowns/eventos/");
 //             //     cant = 0;
 //             //     for (let item of files) {
-//             //         let auxjson = require("./countdowns/eventos/" + item);
+//             //         let auxjson = require("Bob_brain/countdowns/eventos/" + item);
 //             //         if (auxjson.categoria === "evento") {
 //             //             cant++;
 //             //             var m = await message.channel.send("El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -1228,11 +1228,11 @@ function notificar(nombre, motivo) {
 //             //         message.channel.send("No he encontrado eventos :confused:");
 //             //     }
 //             //     var cant2 = 0;
-//             //     var filescump = fs.readdirSync('./countdowns/cumples');
+//             //     var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
 
 //             //     message.channel.send("Cumpleaños Guardados:");
 //             //     for (let item of filescump) {
-//             //         let auxjson = require("./countdowns/cumples/" + item);
+//             //         let auxjson = require("Bob_brain/countdowns/cumples/" + item);
 //             //         if (auxjson.categoria === "cumple") {
 //             //             cant2++;
 //             //             var m = await message.channel.send("El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
