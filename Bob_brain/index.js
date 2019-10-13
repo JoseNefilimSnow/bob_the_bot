@@ -1,8 +1,8 @@
 //Imports E inicio de bots
-const fs = require('fs-extra')
-const TelegramBot = require('node-telegram-bot-api');
-const Discord = require('discord.js');
-var https = require('https');
+const fs = require("fs-extra")
+const TelegramBot = require("node-telegram-bot-api");
+const Discord = require("discord.js");
+var https = require("https");
 const configTel = require("./configTel.json");
 const configDis = require("./configDis.json");
 const service = require("./service.js");
@@ -15,7 +15,7 @@ botDis.login(process.env.TOKEN_DISCORD);
 
 // -------------------------------------------------------------------------------
 
-console.log('Iniciando...');
+console.log("Iniciando...");
 
 //Ininiamos el bot en Discord
 
@@ -197,7 +197,7 @@ botDis.on("message", async message => {
                         message.channel.send("No he encontrado eventos :confused:");
                     }
                     var cant2 = 0;
-                    var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
+                    var filescump = fs.readdirSync("Bob_brain/countdowns/cumples");
 
                     message.channel.send("Cumpleaños Guardados:");
                     for (let item of filescump) {
@@ -229,7 +229,7 @@ botDis.on("message", async message => {
                     if (cuentaAtras[1] === "") {
                         message.channel.send("No puedes dejarme sin saber de quien es el cumple :sad:");
                         var cant = 0;
-                        var files = fs.readdirSync('Bob_brain/countdowns/cumples');
+                        var files = fs.readdirSync("Bob_brain/countdowns/cumples");
 
                         message.channel.send("Estos son los posibles");
                         for (let item of files) {
@@ -306,7 +306,7 @@ botDis.on("message", async message => {
             let numDados = "";
             let count = 0;
 
-            while (opcionesDado.charAt(count) != 'd') {
+            while (opcionesDado.charAt(count) != "d") {
                 numDados += opcionesDado.charAt(count);
                 count++;
             }
@@ -365,7 +365,7 @@ botDis.on("message", async message => {
                     }
                     break;
                 case "ver":
-                    var files = fs.readdirSync('./recordatorios/');
+                    var files = fs.readdirSync("./recordatorios/");
                     cant = 0;
                     message.channel.send("Dejame mirar por aquí...");
 
@@ -424,7 +424,7 @@ botDis.on("message", async message => {
                     break;
 
                 case "cerrar":
-                    var files = fs.readdirSync('./recordatorios/');
+                    var files = fs.readdirSync("./recordatorios/");
                     message.channel.send("¿Cual quieres cerrar? Usa .recordatorio cerrar + nombre del recordatorio tal y como se presenta");
                     if (subcomando[1] != null) {
                         let auxjson = fs.readJSONSync("./recordatorios/" + subcomando[1] + ".json");
@@ -690,7 +690,7 @@ botTel.on("message", async message => {
                 switch (subver) {
                     case "cumples":
                         var cant = 0;
-                        var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
+                        var filescump = fs.readdirSync("Bob_brain/countdowns/cumples");
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
 
                         for (let item of filescump) {
@@ -744,7 +744,7 @@ botTel.on("message", async message => {
                             botTel.sendMessage(message.chat.id, "No he encontrado eventos :confused:");
                         }
                         var cant2 = 0;
-                        var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
+                        var filescump = fs.readdirSync("Bob_brain/countdowns/cumples");
 
                         botTel.sendMessage(message.chat.id, "Cumpleaños Guardados:");
                         for (let item of filescump) {
@@ -776,7 +776,7 @@ botTel.on("message", async message => {
                         if (cuentaAtras[1] === "") {
                             botTel.sendMessage(message.chat.id, "No puedes dejarme sin saber de quien es el cumple :sad:");
                             var cant = 0;
-                            var files = fs.readdirSync('Bob_brain/countdowns/cumples');
+                            var files = fs.readdirSync("Bob_brain/countdowns/cumples");
 
                             botTel.sendMessage(message.chat.id, "Estos son los posibles");
                             for (let item of files) {
@@ -854,7 +854,7 @@ botTel.on("message", async message => {
                 let numDados = "";
                 let count = 0;
 
-                while (opcionesDado.charAt(count) != 'd') {
+                while (opcionesDado.charAt(count) != "d") {
                     numDados += opcionesDado.charAt(count);
                     count++;
                 }
@@ -975,11 +975,11 @@ function telegramAnnoy(sound) {
     switch (sound) {
 
         case "ara":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('./sound/ara.mp3');
+            botDis.channels.get("587668857788039169").join().then(connection => {
+                const dispatcher = connection.playFile("./sound/ara.mp3");
                 dispatcher.setVolume(10);
                 dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
+                    botDis.channels.get("587668857788039169").leave();
                 });
             }).catch(err => {
                 console.log(err)
@@ -987,11 +987,11 @@ function telegramAnnoy(sound) {
             break;
 
         case "epic":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('./sound/gio.mp3');
+            botDis.channels.get("587668857788039169").join().then(connection => {
+                const dispatcher = connection.playFile("./sound/gio.mp3");
                 dispatcher.setVolume(0.5);
                 dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
+                    botDis.channels.get("587668857788039169").leave();
                 });
             }).catch(err => {
                 console.log(err)
@@ -999,11 +999,11 @@ function telegramAnnoy(sound) {
             break;
 
         case "voy":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('./sound/pipo.mp3');
+            botDis.channels.get("587668857788039169").join().then(connection => {
+                const dispatcher = connection.playFile("./sound/pipo.mp3");
                 dispatcher.setVolume(15);
                 dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
+                    botDis.channels.get("587668857788039169").leave();
                 });
             }).catch(err => {
                 console.log(err)
@@ -1012,11 +1012,11 @@ function telegramAnnoy(sound) {
             break;
 
         case "araleo":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('./sound/araleo.wav');
+            botDis.channels.get("587668857788039169").join().then(connection => {
+                const dispatcher = connection.playFile("./sound/araleo.wav");
                 dispatcher.setVolume(10);
                 dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
+                    botDis.channels.get("587668857788039169").leave();
                 });
             }).catch(err => {
                 console.log(err)
@@ -1024,11 +1024,11 @@ function telegramAnnoy(sound) {
             break;
 
         case "cute":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('./sound/pudi.mp3');
+            botDis.channels.get("587668857788039169").join().then(connection => {
+                const dispatcher = connection.playFile("./sound/pudi.mp3");
                 dispatcher.setVolume(0.7);
                 dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
+                    botDis.channels.get("587668857788039169").leave();
                 });
             }).catch(err => {
                 console.log(err)
@@ -1050,11 +1050,11 @@ function toDiscord(mensaje, usuario, auxFile, chat, caption, auxBool) {
                     caption = "";
                 }
                 if (auxBool) {
-                    botDis.channels.get('587668857788039169').join().then(connection => {
+                    botDis.channels.get("587668857788039169").join().then(connection => {
 
                         const dispatcher = connection.playArbitraryInput("https://api.telegram.org/file/bot" + configTel.token + "/" + res.file_path);
                         dispatcher.on("end", end => {
-                            botDis.channels.get('587668857788039169').leave();
+                            botDis.channels.get("587668857788039169").leave();
                         });
                     }).catch(err => {
                         console.log(err)
@@ -1071,14 +1071,14 @@ function toDiscord(mensaje, usuario, auxFile, chat, caption, auxBool) {
 //--------------------------------------Recordatorios, Cumpleaños y Eventos------------------------------------------------------------------
 setInterval(function recuerdame() {
     var today = new Date();
-    var files = fs.readdirSync('./recordatorios');
+    var files = fs.readdirSync("./recordatorios");
     console.log(files);
     for (item of files) {
-        var auxjson = fs.readJSONSync('./recordatorios/' + item);
+        var auxjson = fs.readJSONSync("./recordatorios/" + item);
         console.log(item);
         let msg = "";
         for (let i = 0; i < auxjson.msg.length; i++) {
-            if (auxjson.msg.charAt(i) == '_') {
+            if (auxjson.msg.charAt(i) == "_") {
                 msg = msg + " ";
             } else {
                 msg = msg + auxjson.msg.charAt(i);
@@ -1095,12 +1095,12 @@ setInterval(function recuerdame() {
             eventos();
         }
         console.log(msg);
-        console.log('Es a las: ' + auxjson.hora)
-        console.log('Son las: ' + todayTime)
+        console.log("Es a las: " + auxjson.hora)
+        console.log("Son las: " + todayTime)
 
 
         if (auxjson.hora === todayTime && auxjson.estado !== "innactivo") {
-            botDis.channels.get('607821527404118022').send("<@" + auxjson.persona + "> : " + msg);
+            botDis.channels.get("607821527404118022").send("<@" + auxjson.persona + "> : " + msg);
         }
     }
     console.log("Recordatorios comprobados")
@@ -1111,7 +1111,7 @@ function cumples() {
     let currentyear = Number(today.getFullYear());
     console.log("Dias para fin de año:" + service.diasPara(today, service.refactorDate("01/01/" + (currentyear + 1))));
 
-    var files = fs.readdirSync('Bob_brain/countdowns/cumples');
+    var files = fs.readdirSync("Bob_brain/countdowns/cumples");
     for (let item of files) {
         let json3 = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
         if (service.diasPara(today, service.refactorDate(json3.codw)) == 0) {
@@ -1148,7 +1148,7 @@ eventos();
 
 function notificar(nombre, motivo) {
     try {
-        if (motivo === 'felicitar') {
+        if (motivo === "felicitar") {
             botDis.channels.get("607821527404118022").send("<@" + service.user(nombre) + ">: " + "Feliz cumple !!!!!!1001010");
         }
 
@@ -1228,7 +1228,7 @@ function notificar(nombre, motivo) {
 //             //         message.channel.send("No he encontrado eventos :confused:");
 //             //     }
 //             //     var cant2 = 0;
-//             //     var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
+//             //     var filescump = fs.readdirSync("Bob_brain/countdowns/cumples");
 
 //             //     message.channel.send("Cumpleaños Guardados:");
 //             //     for (let item of filescump) {
@@ -1245,7 +1245,7 @@ function notificar(nombre, motivo) {
 //             //     break;
 
 //         default:
-//             return "No he encontrado nada bajo la categoria: " + subver + " ¡Prueba con 'cetus', 'alertas' o 'nightwave'!";
+//             return "No he encontrado nada bajo la categoria: " + subver + " ¡Prueba con "cetus", "alertas" o "nightwave"!";
 
 //     }
 // }
