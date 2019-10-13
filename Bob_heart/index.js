@@ -184,7 +184,7 @@ botDis.on("message", async message => {
                 case "todo":
                     message.channel.send("Eventos Planeados:");
 
-                    var files = fs.readdirSync('./Bob_brain/countdowns/eventos/');
+                    var files = fs.readdirSync('../Bob_brain/countdowns/eventos/');
                     cant = 0;
                     for (let item of files) {
                         let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
