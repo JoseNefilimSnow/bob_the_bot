@@ -1,4 +1,5 @@
 //Imports E inicio de bots
+require('dotenv/config');
 const fs = require('fs-extra')
 const TelegramBot = require('node-telegram-bot-api');
 const Discord = require('discord.js');
