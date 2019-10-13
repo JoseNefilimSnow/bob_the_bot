@@ -1111,7 +1111,7 @@ function cumples() {
     let currentyear = Number(today.getFullYear());
     console.log("Dias para fin de año:" + service.diasPara(today, service.refactorDate("01/01/" + (currentyear + 1))));
 
-    var files = fs.readdirSync('./countdowns/cumples');
+    var files = fs.readdirSync('Bob_brain/countdowns/cumples');
     for (let item of files) {
         let json3 = require("./countdowns/cumples/" + item);
         if (service.diasPara(today, service.refactorDate(json3.codw)) == 0) {
