@@ -144,7 +144,7 @@ botDis.on("message", async message => {
 
                 case "cumples":
                     var cant = 0;
-                    var filescump = fs.readdirSync('countdowns/cumples');
+                    var filescump = fs.readdir('countdowns/cumples');
                     message.channel.send("Dejame mirar por aquí...");
 
                     for (let item of filescump) {
@@ -164,7 +164,7 @@ botDis.on("message", async message => {
 
                 case "eventos":
                     var cant = 0;
-                    var filesev = fs.readdirSync('countdowns/eventos');
+                    var filesev = fs.readdir('countdowns/eventos');
                     message.channel.send("Dejame mirar por aquí...");
 
                     for (let item of filesev) {
@@ -185,7 +185,7 @@ botDis.on("message", async message => {
                 case "todo":
                     message.channel.send("Eventos Planeados:");
 
-                    var files = fs.readdirSync('countdowns/eventos');
+                    var files = fs.readdir('countdowns/eventos');
                     cant = 0;
                     for (let item of files) {
                         let auxjson = require("countdowns/eventos/" + item);
@@ -198,7 +198,7 @@ botDis.on("message", async message => {
                         message.channel.send("No he encontrado eventos :confused:");
                     }
                     var cant2 = 0;
-                    var filescump = fs.readdirSync('countdowns/cumples');
+                    var filescump = fs.readdir('countdowns/cumples');
 
                     message.channel.send("Cumpleaños Guardados:");
                     for (let item of filescump) {
@@ -230,7 +230,7 @@ botDis.on("message", async message => {
                     if (cuentaAtras[1] === "") {
                         message.channel.send("No puedes dejarme sin saber de quien es el cumple :sad:");
                         var cant = 0;
-                        var files = fs.readdirSync('countdowns/cumples');
+                        var files = fs.readdir('countdowns/cumples');
 
                         message.channel.send("Estos son los posibles");
                         for (let item of files) {
@@ -264,7 +264,7 @@ botDis.on("message", async message => {
                     if (cuentaAtras[1] === "") {
                         message.channel.send("No puedes dejarme sin saber de que evento me hablas :sad:");
                         var cant = 0;
-                        var files = fs.readdirSync('countdowns/eventos');
+                        var files = fs.readdir('countdowns/eventos');
 
                         message.channel.send("Estos son los posibles");
                         for (let item of files) {
@@ -366,7 +366,7 @@ botDis.on("message", async message => {
                     }
                     break;
                 case "ver":
-                    var files = fs.readdirSync('./recordatorios/');
+                    var files = fs.readdir('./recordatorios/');
                     cant = 0;
                     message.channel.send("Dejame mirar por aquí...");
 
@@ -425,7 +425,7 @@ botDis.on("message", async message => {
                     break;
 
                 case "cerrar":
-                    var files = fs.readdirSync('./recordatorios/');
+                    var files = fs.readdir('./recordatorios/');
                     message.channel.send("¿Cual quieres cerrar? Usa .recordatorio cerrar + nombre del recordatorio tal y como se presenta");
                     if (subcomando[1] != null) {
                         let auxjson = require("./recordatorios/" + subcomando[1] + ".json");
@@ -691,7 +691,7 @@ botTel.on("message", async message => {
                 switch (subver) {
                     case "cumples":
                         var cant = 0;
-                        var filescump = fs.readdirSync('countdowns/cumples');
+                        var filescump = fs.readdir('countdowns/cumples');
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
 
                         for (let item of filescump) {
@@ -711,7 +711,7 @@ botTel.on("message", async message => {
 
                     case "eventos":
                         var cant = 0;
-                        var filesev = fs.readdirSync('countdowns/eventos');
+                        var filesev = fs.readdir('countdowns/eventos');
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
 
                         for (let item of filesev) {
@@ -732,7 +732,7 @@ botTel.on("message", async message => {
                     case "todo":
                         botTel.sendMessage(message.chat.id, "Eventos Planeados:");
 
-                        var files = fs.readdirSync('countdowns/eventos');
+                        var files = fs.readdir('countdowns/eventos');
                         cant = 0;
                         for (let item of files) {
                             let auxjson = require("countdowns/eventos/" + item);
@@ -745,7 +745,7 @@ botTel.on("message", async message => {
                             botTel.sendMessage(message.chat.id, "No he encontrado eventos :confused:");
                         }
                         var cant2 = 0;
-                        var filescump = fs.readdirSync('countdowns/cumples');
+                        var filescump = fs.readdir('countdowns/cumples');
 
                         botTel.sendMessage(message.chat.id, "Cumpleaños Guardados:");
                         for (let item of filescump) {
@@ -777,7 +777,7 @@ botTel.on("message", async message => {
                         if (cuentaAtras[1] === "") {
                             botTel.sendMessage(message.chat.id, "No puedes dejarme sin saber de quien es el cumple :sad:");
                             var cant = 0;
-                            var files = fs.readdirSync('countdowns/cumples');
+                            var files = fs.readdir('countdowns/cumples');
 
                             botTel.sendMessage(message.chat.id, "Estos son los posibles");
                             for (let item of files) {
@@ -811,7 +811,7 @@ botTel.on("message", async message => {
                         if (cuentaAtras[1] === "") {
                             botTel.sendMessage(message.chat.id, "No puedes dejarme sin saber de que evento me hablas :sad:");
                             var cant = 0;
-                            var files = fs.readdirSync('countdowns/eventos');
+                            var files = fs.readdir('countdowns/eventos');
 
                             botTel.sendMessage(message.chat.id, "Estos son los posibles");
                             for (let item of files) {
@@ -1072,7 +1072,7 @@ function toDiscord(mensaje, usuario, auxFile, chat, caption, auxBool) {
 //--------------------------------------Recordatorios, Cumpleaños y Eventos------------------------------------------------------------------
 setInterval(function recuerdame() {
     var today = new Date();
-    var files = fs.readdirSync('./recordatorios');
+    var files = fs.readdir('./recordatorios');
     console.log(files);
     for (item of files) {
         var auxjson = require('./recordatorios/' + item);
@@ -1099,7 +1099,6 @@ setInterval(function recuerdame() {
         console.log('Es a las: ' + auxjson.hora)
         console.log('Son las: ' + todayTime)
 
-
         if (auxjson.hora === todayTime && auxjson.estado !== "innactivo") {
             botDis.channels.get('607821527404118022').send("<@" + auxjson.persona + "> : " + msg);
         }
@@ -1112,7 +1111,7 @@ function cumples() {
     let currentyear = Number(today.getFullYear());
     console.log("Dias para fin de año:" + service.diasPara(today, service.refactorDate("01/01/" + (currentyear + 1))));
 
-    var files = fs.readdirSync('countdowns/cumples');
+    var files = fs.readdir('countdowns/cumples');
     for (let item of files) {
         let json3 = require("countdowns/cumples/" + item);
         if (service.diasPara(today, service.refactorDate(json3.codw)) == 0) {
@@ -1136,7 +1135,7 @@ cumples();
 function eventos() {
 
     var today = new Date();
-    var files = fs.readdirSync('countdowns/eventos');
+    var files = fs.readdir('countdowns/eventos');
 
     for (let item of files) {
         let json3 = require("countdowns/eventos/" + item);
@@ -1195,7 +1194,7 @@ function notificar(nombre, motivo) {
 
 //             // case "eventos":
 //             //     var cant = 0;
-//             //     var filesev = fs.readdirSync('countdowns/eventos');
+//             //     var filesev = fs.readdir('countdowns/eventos');
 //             //     message.channel.send("Dejame mirar por aquí...");
 
 //             //     for (let item of filesev) {
@@ -1216,7 +1215,7 @@ function notificar(nombre, motivo) {
 //             // case "todo":
 //             //     message.channel.send("Eventos Planeados:");
 
-//             //     var files = fs.readdirSync('countdowns/eventos');
+//             //     var files = fs.readdir('countdowns/eventos');
 //             //     cant = 0;
 //             //     for (let item of files) {
 //             //         let auxjson = require("countdowns/eventos/" + item);
@@ -1229,7 +1228,7 @@ function notificar(nombre, motivo) {
 //             //         message.channel.send("No he encontrado eventos :confused:");
 //             //     }
 //             //     var cant2 = 0;
-//             //     var filescump = fs.readdirSync('countdowns/cumples');
+//             //     var filescump = fs.readdir('countdowns/cumples');
 
 //             //     message.channel.send("Cumpleaños Guardados:");
 //             //     for (let item of filescump) {
