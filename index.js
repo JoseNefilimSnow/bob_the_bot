@@ -1,10 +1,11 @@
 //Imports E inicio de bots
-const fs = require("fs-extra")
-const TelegramBot = require("node-telegram-bot-api");
-const Discord = require("discord.js");
-var https = require("https");
-const configTel = require("./configTel.json");
-const configDis = require("./configDis.json");
+require('dotenv/config');
+const fs = require('fs-extra');
+const TelegramBot = require('node-telegram-bot-api');
+const Discord = require('discord.js');
+
+const configTel = require("./Bob_brain/configTel.json");
+const configDis = require("./Bob_brain/configDis.json");
 const service = require("./service.js");
 
 const botTel = new TelegramBot(process.env.TOKEN_TELEGRAM, {
@@ -15,7 +16,7 @@ botDis.login(process.env.TOKEN_DISCORD);
 
 // -------------------------------------------------------------------------------
 
-console.log("Iniciando...");
+console.log('Iniciando...');
 
 //Ininiamos el bot en Discord
 
@@ -35,7 +36,20 @@ botTel.on("ready", () => {
 
 
 //-----------------------------------------------------Discord-------------------------------------------------------------------------------
-
+botDis.on("message", async message => {
+    var adjunto = ""
+    if ("attachments" in message) {
+        if(message.attachments.first()===undefined){
+            adjunto="";
+        }else{
+        adjunto = message.attachments.first().url;
+        }
+    }
+    var msg = message.content;
+    var usuario = service.revuser(message.author.id);
+    var chat = message.channel.id;
+    toTelegram(msg, usuario, chat, adjunto);
+});
 
 botDis.on("message", async message => {
     //no queremos que el bot se responda a si mismo... ¿o si?
@@ -52,7 +66,7 @@ botDis.on("message", async message => {
             const opcionesAyuda = args.join(" ");
             switch (opcionesAyuda) {
                 default:
-                    message.channel.send("Mis comandos son: \n crear \n ver \n cuantoquedapara \n d (tirar dados) \n limpia \n recordatorio \n tel \n sound \n warframe \n Puedes saber mas de cada uno usando 'help' + comando");
+                    message.channel.send("Mis comandos son: \n crear \n ver \n cuantoquedapara \n d (tirar dados) \n limpia \n recordatorio \n tel \n sound \n Puedes saber mas de cada uno usando 'help' + comando");
                     break;
 
                 case "crear":
@@ -73,16 +87,12 @@ botDis.on("message", async message => {
                 case "recordatorio":
                     message.channel.send("recordatorio: realiza una serie de acciones con el fin de construir un recordatorio para alguien o todos, para mas informacion usa el comando '.recordatorio'");
                     break;
-                case "play":
-                    message.channel.send("play + 'url': reproduce en el canal un clip de sonido");
-                    break;
                 case "sound":
                     message.channel.send("sound + 'ara|araleo|cute|epic': reproduce en el canal un clip de sonido");
                     break;
                 case "tel":
                     message.channel.send("tel + 'mensaje': Envia un mensaje de parte del usuario al canal Weeznha de telegram");
                     break;
-
 
             }
             break;
@@ -112,7 +122,7 @@ botDis.on("message", async message => {
 
                 if (cat === '"cumple"') {
 
-                    fs.writeJSON("./countdowns/cumples/Cumple_" + setFecha[1] + ".json", JSON.parse(json_cd), function (err, result) {
+                    fs.writeJSON("./Bob_brain/countdowns/cumples/Cumple_" + setFecha[1] + ".json", JSON.parse(json_cd), function (err, result) {
                         if (err) console.log('error', err);
                         if (result) {}
                         message.channel.send("¡He creado la cuenta atras!");
@@ -120,7 +130,7 @@ botDis.on("message", async message => {
 
                 } else if (cat === '"evento"') {
 
-                    fs.writeJSON("./countdowns/eventos/Evento_" + setFecha[1] + ".json", JSON.parse(json_cd), function (err, result) {
+                    fs.writeJSON("./Bob_brain/countdowns/eventos/Evento_" + setFecha[1] + ".json", JSON.parse(json_cd), function (err, result) {
                         if (err) console.log('error', err);
                         if (result) {}
                     });
@@ -143,11 +153,11 @@ botDis.on("message", async message => {
 
                 case "cumples":
                     var cant = 0;
-                    var filescump = fs.readdirSync('Bob_brain/countdowns/cumples');
+                    var filescump = fs.readdirSync('./Bob_brain/countdowns/cumples');
                     message.channel.send("Dejame mirar por aquí...");
 
                     for (let item of filescump) {
-                        let auxjson = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
+                        let auxjson = require("./Bob_brain/countdowns/cumples/" + item);
                         if (auxjson.categoria === "cumple") {
                             cant++;
                             var m = await message.channel.send("El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -163,11 +173,11 @@ botDis.on("message", async message => {
 
                 case "eventos":
                     var cant = 0;
-                    var filesev = fs.readdirSync("Bob_brain/countdowns/eventos");
+                    var filesev = fs.readdirSync('./Bob_brain/countdowns/eventos');
                     message.channel.send("Dejame mirar por aquí...");
 
                     for (let item of filesev) {
-                        let auxjson = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
+                        let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                         if (auxjson.categoria === "evento") {
                             cant++;
                             var m = await message.channel.send("El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -184,10 +194,10 @@ botDis.on("message", async message => {
                 case "todo":
                     message.channel.send("Eventos Planeados:");
 
-                    var files = fs.readdirSync("Bob_brain/countdowns/eventos/");
+                    var files = fs.readdirSync('./Bob_brain/countdowns/eventos/');
                     cant = 0;
                     for (let item of files) {
-                        let auxjson = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
+                        let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                         if (auxjson.categoria === "evento") {
                             cant++;
                             var m = await message.channel.send("El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -197,11 +207,11 @@ botDis.on("message", async message => {
                         message.channel.send("No he encontrado eventos :confused:");
                     }
                     var cant2 = 0;
-                    var filescump = fs.readdirSync("Bob_brain/countdowns/cumples");
+                    var filescump = fs.readdirSync('./Bob_brain/countdowns/cumples');
 
                     message.channel.send("Cumpleaños Guardados:");
                     for (let item of filescump) {
-                        let auxjson = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
+                        let auxjson = require("./Bob_brain/countdowns/cumples/" + item);
                         if (auxjson.categoria === "cumple") {
                             cant2++;
                             var m = await message.channel.send("El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -229,11 +239,11 @@ botDis.on("message", async message => {
                     if (cuentaAtras[1] === "") {
                         message.channel.send("No puedes dejarme sin saber de quien es el cumple :sad:");
                         var cant = 0;
-                        var files = fs.readdirSync("Bob_brain/countdowns/cumples");
+                        var files = fs.readdirSync('./Bob_brain/countdowns/cumples');
 
                         message.channel.send("Estos son los posibles");
                         for (let item of files) {
-                            let auxjson = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
+                            let auxjson = require("./Bob_brain/countdowns/cumples/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant++;
                                 var m = await message.channel.send(item.substring(7, item.length - 5));
@@ -246,7 +256,7 @@ botDis.on("message", async message => {
                         break;
                     }
                     let nombre = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras[1].substring(1, cuentaAtras[1].length).toLowerCase();
-                    let jsoncumple = fs.readJSONSync("./countdowns/cumples/Cumple_" + nombre + ".json");
+                    let jsoncumple = require("./Bob_brain/countdowns/cumples/Cumple_" + nombre + ".json");
 
                     message.channel.send("Dejame calcular...");
                     var cadate = service.refactorDate(jsoncumple.codw);
@@ -263,11 +273,11 @@ botDis.on("message", async message => {
                     if (cuentaAtras[1] === "") {
                         message.channel.send("No puedes dejarme sin saber de que evento me hablas :sad:");
                         var cant = 0;
-                        var files = fs.readdirSync("Bob_brain/countdowns/eventos");
+                        var files = fs.readdirSync('./Bob_brain/countdowns/eventos');
 
                         message.channel.send("Estos son los posibles");
                         for (let item of files) {
-                            let auxjson = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
+                            let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant++;
                                 var m = await message.channel.send(item.substring(7, item.length - 5));
@@ -280,7 +290,7 @@ botDis.on("message", async message => {
                         break;
                     }
                     let nombreev = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras[1].substring(1, cuentaAtras[1].length).toLowerCase();
-                    let jsonevento = fs.readJSONSync("./countdowns/eventos/Evento_" + nombreev + ".json");
+                    let jsonevento = require("./Bob_brain/countdowns/eventos/Evento_" + nombreev + ".json");
 
                     message.channel.send("Dejame calcular...");
                     var cadate = service.refactorDate(jsonevento.codw);
@@ -306,7 +316,7 @@ botDis.on("message", async message => {
             let numDados = "";
             let count = 0;
 
-            while (opcionesDado.charAt(count) != "d") {
+            while (opcionesDado.charAt(count) != 'd') {
                 numDados += opcionesDado.charAt(count);
                 count++;
             }
@@ -355,7 +365,7 @@ botDis.on("message", async message => {
                         let json_r = '{"recordatorio":' + recordatorio + ',"persona":' + "" + persona + ',' +
                             '"msg":' + '"' + msg + '"' + ',"hora": "' + hora + '"' + ',"estado": "' + "activo" + '"' +
                             '}';
-                        fs.writeJSON("./recordatorios/" + subcomando[1] + ".json", JSON.parse(json_r), function (err, result) {
+                        fs.writeJSON("./Bob_brain/recordatorios/" + subcomando[1] + ".json", JSON.parse(json_r), function (err, result) {
                             if (err) console.log('error', err);
                             if (result) {
 
@@ -365,13 +375,13 @@ botDis.on("message", async message => {
                     }
                     break;
                 case "ver":
-                    var files = fs.readdirSync("./recordatorios/");
+                    var files = fs.readdirSync('./Bob_brain/recordatorios/');
                     cant = 0;
                     message.channel.send("Dejame mirar por aquí...");
 
                     if (subcomando[1] == null) {
                         for (let item of files) {
-                            let auxjson = fs.readJSONSync("./recordatorios/" + item);
+                            let auxjson = require("./Bob_brain/recordatorios/" + item);
                             cant++;
                             let msg = "";
                             for (let i = 0; i < auxjson.msg.length; i++) {
@@ -401,7 +411,7 @@ botDis.on("message", async message => {
                             message.channel.send("Los mensajes para <@" + service.user(subcomando[1]) + ">");
 
                             for (let item of files) {
-                                let auxjson = fs.readJSONSync("./recordatorios/" + item);
+                                let auxjson = require("./Bob_brain/recordatorios/" + item);
                                 cant++;
                                 let msg = "";
                                 for (let i = 0; i < auxjson.msg.length; i++) {
@@ -424,15 +434,15 @@ botDis.on("message", async message => {
                     break;
 
                 case "cerrar":
-                    var files = fs.readdirSync("./recordatorios/");
+                    var files = fs.readdirSync('./Bob_brain/recordatorios/');
                     message.channel.send("¿Cual quieres cerrar? Usa .recordatorio cerrar + nombre del recordatorio tal y como se presenta");
                     if (subcomando[1] != null) {
-                        let auxjson = fs.readJSONSync("./recordatorios/" + subcomando[1] + ".json");
+                        let auxjson = require("./Bob_brain/recordatorios/" + subcomando[1] + ".json");
                         if (auxjson == null) {
                             message.channel.send("No existe el recordatorio");
                         } else {
                             auxjson.estado = "innactivo";
-                            fs.writeJSON("./recordatorios/" + subcomando[1] + ".json", auxjson, function (err, result) {
+                            fs.writeJSON("./Bob_brain/recordatorios/" + subcomando[1] + ".json", auxjson, function (err, result) {
                                 if (err) console.log('error', err);
                                 if (result) {
 
@@ -443,7 +453,7 @@ botDis.on("message", async message => {
                         break;
                     }
                     for (let item of files) {
-                        let auxjson = fs.readJSONSync("./recordatorios/" + item);
+                        let auxjson = require("./Bob_brain/recordatorios/" + item);
                         let msg = "";
                         for (let i = 0; i < auxjson.msg.length; i++) {
                             if (auxjson.msg.charAt(i) == '_') {
@@ -461,31 +471,9 @@ botDis.on("message", async message => {
             }
             break;
 
-            // case "play":
-            //     var subcomando = args.join(" ").toLowerCase().split(" ");
-
-            //     if (subcomando.length == 1) {
-
-            //         var voiceChannel = message.member.voiceChannel;
-            //         nombre = message.member.id;
-            //         if (voiceChannel == undefined) {
-            //             message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-            //         } else {
-            //             voiceChannel.join().then(connection => {
-            //                 const dispatcher = connection.playArbitraryInput(subcomando[0]);
-            //                 dispatcher.on("end", end => {
-            //                     voiceChannel.leave();
-            //                 });
-            //             }).catch(err => {
-            //                 console.log(err)
-            //             })
-            //         }
-            //     }
-            //     break;
-
         case "sound":
             var subcomando = args.join(" ").toLowerCase().split(" ");
-            var usr;
+
             if (subcomando.length == 1) {
                 switch (subcomando[0]) {
 
@@ -495,12 +483,12 @@ botDis.on("message", async message => {
 
                     case "ara":
                         var voiceChannel = message.member.voiceChannel;
-                        usr = message.member.id;
+                        nombre = message.member.id;
                         if (voiceChannel == undefined) {
-                            message.channel.send("<@" + usr + ">: " + "No puedo saber donde estas pendejo");
+                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
                         } else {
                             voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./sound/ara.mp3');
+                                const dispatcher = connection.playFile('./Bob_brain/sound/ara.mp3');
                                 dispatcher.setVolume(10);
                                 dispatcher.on("end", end => {
                                     voiceChannel.leave();
@@ -513,12 +501,12 @@ botDis.on("message", async message => {
 
                     case "epic":
                         var voiceChannel = message.member.voiceChannel;
-                        usr = message.member.id;
+                        nombre = message.member.id;
                         if (voiceChannel == undefined) {
-                            message.channel.send("<@" + usr + ">: " + "No puedo saber donde estas pendejo");
+                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
                         } else {
                             voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./sound/gio.mp3');
+                                const dispatcher = connection.playFile('./Bob_brain/sound/gio.mp3');
                                 dispatcher.setVolume(0.5);
                                 dispatcher.on("end", end => {
                                     voiceChannel.leave();
@@ -530,12 +518,12 @@ botDis.on("message", async message => {
                         break;
                     case "voy":
                         var voiceChannel = message.member.voiceChannel;
-                        usr = message.member.id;
+                        nombre = message.member.id;
                         if (voiceChannel == undefined) {
-                            message.channel.send("<@" + usr + ">: " + "No puedo saber donde estas pendejo");
+                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
                         } else {
                             voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./sound/pipo.mp3');
+                                const dispatcher = connection.playFile('./Bob_brain/sound/pipo.mp3');
                                 dispatcher.setVolume(15);
                                 dispatcher.on("end", end => {
                                     voiceChannel.leave();
@@ -547,12 +535,12 @@ botDis.on("message", async message => {
                         break;
                     case "araleo":
                         var voiceChannel = message.member.voiceChannel;
-                        usr = message.member.id;
+                        nombre = message.member.id;
                         if (voiceChannel == undefined) {
-                            message.channel.send("<@" + usr + ">: " + "No puedo saber donde estas pendejo");
+                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
                         } else {
                             voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./sound/araleo.wav');
+                                const dispatcher = connection.playFile('./Bob_brain/sound/araleo.wav');
                                 dispatcher.setVolume(10);
                                 dispatcher.on("end", end => {
                                     voiceChannel.leave();
@@ -565,12 +553,12 @@ botDis.on("message", async message => {
 
                     case "cute":
                         var voiceChannel = message.member.voiceChannel;
-                        usr = message.member.id;
+                        nombre = message.member.id;
                         if (voiceChannel == undefined) {
-                            message.channel.send("<@" + usr + ">: " + "No puedo saber donde estas pendejo");
+                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
                         } else {
                             voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./sound/pudi.mp3');
+                                const dispatcher = connection.playFile('./Bob_brain/sound/pudi.mp3');
                                 dispatcher.setVolume(0.7);
                                 dispatcher.on("end", end => {
                                     voiceChannel.leave();
@@ -590,22 +578,38 @@ botDis.on("message", async message => {
             var mensaje = args.join(" ");
             var usuario = service.revuser(message.member.id);
             toTelegram(mensaje, usuario);
-            break;
-
-        case "warframe":
-                let nombre = message.member.id;
-
-                message.channel.send("Nah de esto se encarga Sure" + " <@" + nombre + "> ");
-
-            // var submode = args.join(" ").toLowerCase();
-            // let id = message.member.id;
-            // getWarframeData(submode, message.channel.id, true, id)
-            break;
     }
 });
 
 //----------------------------------------------------Telegram-------------------------------------------------------------------------------
-
+botTel.on("message", async message => {
+    var msg = message.text;
+    var usuario = message.from.first_name;
+    var audio = false;
+    if ("photo" in message) {
+        var fileId = message.photo[1].file_id;
+    }
+    if ("animation" in message) {
+        var fileId = message.animation.file_id;
+    }
+    if ("document" in message && ("animation" in message) == false) {
+        var fileId = message.document.file_id;
+    }
+    if ("video_note" in message) {
+        var fileId = message.video_note.file_id;
+    }
+    if ("video" in message) {
+        var fileId = message.video.file_id;
+    }
+    if ("voice" in message) {
+        var fileId = message.voice.file_id;
+        audio = true;
+    }
+    var caption = message.caption;
+    var auxFile = botTel.getFile(fileId)
+    var chat = message.chat.id;
+    toDiscord(msg, usuario, auxFile, chat, caption, audio);
+});
 
 botTel.on("message", async message => {
     // si no pones el prefijo al principio no se juega!
@@ -664,7 +668,7 @@ botTel.on("message", async message => {
                     let json_cd = '{"codw":' + fechadecdaux + ',"categoria":' + cat.toLowerCase() + '}';
 
                     if (cat === '"cumple"') {
-                        fs.writeJSON("./countdowns/cumples/Cumple_" + setFecha[1] + ".json", JSON.parse(json_cd), function (err, result) {
+                        fs.writeJSON("./Bob_brain/countdowns/cumples/Cumple_" + setFecha[1] + ".json", JSON.parse(json_cd), function (err, result) {
                             if (err) console.log('error', err);
                             if (result) {}
 
@@ -672,7 +676,7 @@ botTel.on("message", async message => {
                         botTel.sendMessage(message.chat.id, "¡He creado la cuenta atras!");
 
                     } else if (cat === '"evento"') {
-                        fs.writeJSON("./countdowns/eventos/Evento_" + setFecha[1] + ".json", json_cd, function (err, result) {
+                        fs.writeJSON("./Bob_brain/countdowns/eventos/Evento_" + setFecha[1] + ".json", json_cd, function (err, result) {
                             if (err) console.log('error', err);
                             if (result) {}
                         });
@@ -690,11 +694,11 @@ botTel.on("message", async message => {
                 switch (subver) {
                     case "cumples":
                         var cant = 0;
-                        var filescump = fs.readdirSync("Bob_brain/countdowns/cumples");
+                        var filescump = fs.readdirSync('./Bob_brain/countdowns/cumples');
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
 
                         for (let item of filescump) {
-                            let auxjson = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
+                            let auxjson = require("./Bob_brain/countdowns/cumples/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant++;
                                 var m = await botTel.sendMessage(message.chat.id, "El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -710,11 +714,11 @@ botTel.on("message", async message => {
 
                     case "eventos":
                         var cant = 0;
-                        var filesev = fs.readdirSync("Bob_brain/countdowns/eventos");
+                        var filesev = fs.readdirSync('./Bob_brain/countdowns/eventos');
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
 
                         for (let item of filesev) {
-                            let auxjson = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
+                            let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                             if (auxjson.categoria === "evento") {
                                 cant++;
                                 var m = await botTel.sendMessage(message.chat.id, "El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -731,10 +735,10 @@ botTel.on("message", async message => {
                     case "todo":
                         botTel.sendMessage(message.chat.id, "Eventos Planeados:");
 
-                        var files = fs.readdirSync("Bob_brain/countdowns/eventos");
+                        var files = fs.readdirSync('./Bob_brain/countdowns/eventos/');
                         cant = 0;
                         for (let item of files) {
-                            let auxjson = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
+                            let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                             if (auxjson.categoria === "evento") {
                                 cant++;
                                 var m = await botTel.sendMessage(message.chat.id, "El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -744,11 +748,11 @@ botTel.on("message", async message => {
                             botTel.sendMessage(message.chat.id, "No he encontrado eventos :confused:");
                         }
                         var cant2 = 0;
-                        var filescump = fs.readdirSync("Bob_brain/countdowns/cumples");
+                        var filescump = fs.readdirSync('./Bob_brain/countdowns/cumples');
 
                         botTel.sendMessage(message.chat.id, "Cumpleaños Guardados:");
                         for (let item of filescump) {
-                            let auxjson = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
+                            let auxjson = require("./Bob_brain/countdowns/cumples/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant2++;
                                 var m = await botTel.sendMessage(message.chat.id, "El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
@@ -776,11 +780,11 @@ botTel.on("message", async message => {
                         if (cuentaAtras[1] === "") {
                             botTel.sendMessage(message.chat.id, "No puedes dejarme sin saber de quien es el cumple :sad:");
                             var cant = 0;
-                            var files = fs.readdirSync("Bob_brain/countdowns/cumples");
+                            var files = fs.readdirSync('./Bob_brain/countdowns/cumples');
 
                             botTel.sendMessage(message.chat.id, "Estos son los posibles");
                             for (let item of files) {
-                                let auxjson = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
+                                let auxjson = require("./Bob_brain/countdowns/cumples/" + item);
                                 if (auxjson.categoria === "cumple") {
                                     cant++;
                                     var m = await botTel.sendMessage(message.chat.id, item.substring(7, item.length - 5));
@@ -793,7 +797,7 @@ botTel.on("message", async message => {
                             break;
                         }
                         let nombre = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras[1].substring(1, cuentaAtras[1].length).toLowerCase();
-                        let jsoncumple = fs.readJSONSync("./countdowns/cumples/Cumple_" + nombre + ".json");
+                        let jsoncumple = require("./Bob_brain/countdowns/cumples/Cumple_" + nombre + ".json");
 
                         botTel.sendMessage(message.chat.id, "Dejame calcular...");
                         var cadate = service.refactorDate(jsoncumple.codw);
@@ -810,11 +814,11 @@ botTel.on("message", async message => {
                         if (cuentaAtras[1] === "") {
                             botTel.sendMessage(message.chat.id, "No puedes dejarme sin saber de que evento me hablas :sad:");
                             var cant = 0;
-                            var files = fs.readdirSync("Bob_brain/countdowns/eventos");
+                            var files = fs.readdirSync('./Bob_brain/countdowns/eventos');
 
                             botTel.sendMessage(message.chat.id, "Estos son los posibles");
                             for (let item of files) {
-                                let auxjson = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
+                                let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                                 if (auxjson.categoria === "cumple") {
                                     cant++;
                                     var m = await botTel.sendMessage(message.chat.id, item.substring(7, item.length - 5));
@@ -827,7 +831,7 @@ botTel.on("message", async message => {
                             break;
                         }
                         let nombreev = cuentaAtras[1].substring(0, 1).toUpperCase() + cuentaAtras[1].substring(1, cuentaAtras[1].length).toLowerCase();
-                        let jsonevento = fs.readJSONSync("./countdowns/eventos/Evento_" + nombreev + ".json");
+                        let jsonevento = require("./Bob_brain/countdowns/eventos/Evento_" + nombreev + ".json");
 
                         botTel.sendMessage(message.chat.id, "Dejame calcular...");
                         var cadate = service.refactorDate(jsonevento.codw);
@@ -854,7 +858,7 @@ botTel.on("message", async message => {
                 let numDados = "";
                 let count = 0;
 
-                while (opcionesDado.charAt(count) != "d") {
+                while (opcionesDado.charAt(count) != 'd') {
                     numDados += opcionesDado.charAt(count);
                     count++;
                 }
@@ -888,15 +892,6 @@ botTel.on("message", async message => {
                 var usuario = message.from.first_name;
                 var chat = message.chat.id;
                 toDiscord(mensaje, usuario, chat);
-                break;
-
-            case "warframe":
-                botTel.sendMessage(message.chat.id, "Nah Nah de esto se encarga Sure");
-                // var submode = args.join(" ").toLowerCase();
-                // var usuario = message.from.first_name;
-                // getWarframeData(submode,message.chat.id,false,usuario);
-
-                break;
 
         }
     }
@@ -905,20 +900,72 @@ botTel.on("message", async message => {
 
 //------------------------------------------------Cross-Comunicacion-------------------------------------------------------------------------
 
-botDis.on("message", async message => {
-    var adjunto = ""
-    if ("attachments" in message) {
-        if (message.attachments.first() === undefined) {
-            adjunto = "";
-        } else {
-            adjunto = message.attachments.first().url;
-        }
+function telegramAnnoy(sound) {
+
+    switch (sound) {
+
+        case "ara":
+            botDis.channels.get('587668857788039169').join().then(connection => {
+                const dispatcher = connection.playFile('../Bob_brain/sound/ara.mp3');
+                dispatcher.setVolume(10);
+                dispatcher.on("end", end => {
+                    botDis.channels.get('587668857788039169').leave();
+                });
+            }).catch(err => {
+                console.log(err)
+            })
+            break;
+
+        case "epic":
+            botDis.channels.get('587668857788039169').join().then(connection => {
+                const dispatcher = connection.playFile('../Bob_brain/sound/gio.mp3');
+                dispatcher.setVolume(0.5);
+                dispatcher.on("end", end => {
+                    botDis.channels.get('587668857788039169').leave();
+                });
+            }).catch(err => {
+                console.log(err)
+            })
+            break;
+
+        case "voy":
+            botDis.channels.get('587668857788039169').join().then(connection => {
+                const dispatcher = connection.playFile('./Bob_brain/sound/pipo.mp3');
+                dispatcher.setVolume(15);
+                dispatcher.on("end", end => {
+                    botDis.channels.get('587668857788039169').leave();
+                });
+            }).catch(err => {
+                console.log(err)
+            })
+
+            break;
+
+        case "araleo":
+            botDis.channels.get('587668857788039169').join().then(connection => {
+                const dispatcher = connection.playFile('../Bob_brain/sound/araleo.wav');
+                dispatcher.setVolume(10);
+                dispatcher.on("end", end => {
+                    botDis.channels.get('587668857788039169').leave();
+                });
+            }).catch(err => {
+                console.log(err)
+            })
+            break;
+
+        case "cute":
+            botDis.channels.get('587668857788039169').join().then(connection => {
+                const dispatcher = connection.playFile('../Bob_brain/sound/pudi.mp3');
+                dispatcher.setVolume(0.7);
+                dispatcher.on("end", end => {
+                    botDis.channels.get('587668857788039169').leave();
+                });
+            }).catch(err => {
+                console.log(err)
+            })
+            break;
     }
-    var msg = message.content;
-    var usuario = service.revuser(message.author.id);
-    var chat = message.channel.id;
-    toTelegram(msg, usuario, chat, adjunto);
-});
+}
 
 function toTelegram(mensaje, usuario, chat, adjunto) {
     if (chat == 625189122637692948 && usuario != "Bob" && usuario != "nadie") {
@@ -930,113 +977,6 @@ function toTelegram(mensaje, usuario, chat, adjunto) {
         }
     }
 }
-
-botTel.on("message", async message => {
-    var msg = message.text;
-    console.log(message);
-    var usuario = message.from.first_name;
-    var audio = false;
-    if ("photo" in message) {
-        var fileId = message.photo[1].file_id;
-    }
-    if ("animation" in message) {
-        var fileId = message.animation.file_id;
-    }
-    if ("document" in message && ("animation" in message) == false) {
-        var fileId = message.document.file_id;
-    }
-    if ("video_note" in message) {
-        var fileId = message.video_note.file_id;
-    }
-    if ("video" in message) {
-        var fileId = message.video.file_id;
-    }
-    if ("voice" in message) {
-        var fileId = message.voice.file_id;
-        audio = true;
-    }
-    if ("audio" in message) {
-        var fileId = message.audio.file_id;
-        audio = true;
-    }
-    var caption = message.caption;
-    if (fileId != undefined) {
-        var auxFile = botTel.getFile(fileId)
-    } else {
-        var auxFile = null;
-    }
-    var chat = message.chat.id;
-    toDiscord(msg, usuario, auxFile, chat, caption, audio);
-});
-
-
-function telegramAnnoy(sound) {
-
-    switch (sound) {
-
-        case "ara":
-            botDis.channels.get("587668857788039169").join().then(connection => {
-                const dispatcher = connection.playFile("./sound/ara.mp3");
-                dispatcher.setVolume(10);
-                dispatcher.on("end", end => {
-                    botDis.channels.get("587668857788039169").leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-            break;
-
-        case "epic":
-            botDis.channels.get("587668857788039169").join().then(connection => {
-                const dispatcher = connection.playFile("./sound/gio.mp3");
-                dispatcher.setVolume(0.5);
-                dispatcher.on("end", end => {
-                    botDis.channels.get("587668857788039169").leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-            break;
-
-        case "voy":
-            botDis.channels.get("587668857788039169").join().then(connection => {
-                const dispatcher = connection.playFile("./sound/pipo.mp3");
-                dispatcher.setVolume(15);
-                dispatcher.on("end", end => {
-                    botDis.channels.get("587668857788039169").leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-
-            break;
-
-        case "araleo":
-            botDis.channels.get("587668857788039169").join().then(connection => {
-                const dispatcher = connection.playFile("./sound/araleo.wav");
-                dispatcher.setVolume(10);
-                dispatcher.on("end", end => {
-                    botDis.channels.get("587668857788039169").leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-            break;
-
-        case "cute":
-            botDis.channels.get("587668857788039169").join().then(connection => {
-                const dispatcher = connection.playFile("./sound/pudi.mp3");
-                dispatcher.setVolume(0.7);
-                dispatcher.on("end", end => {
-                    botDis.channels.get("587668857788039169").leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-            break;
-    }
-}
-
 
 function toDiscord(mensaje, usuario, auxFile, chat, caption, auxBool) {
     if (chat === -96306579 && usuario != "PocketBob") {
@@ -1050,19 +990,17 @@ function toDiscord(mensaje, usuario, auxFile, chat, caption, auxBool) {
                     caption = "";
                 }
                 if (auxBool) {
-                    botDis.channels.get("587668857788039169").join().then(connection => {
+                    botDis.channels.get('587668857788039169').join().then(connection => {
 
                         const dispatcher = connection.playArbitraryInput("https://api.telegram.org/file/bot" + configTel.token + "/" + res.file_path);
                         dispatcher.on("end", end => {
-                            botDis.channels.get("587668857788039169").leave();
+                            botDis.channels.get('587668857788039169').leave();
                         });
                     }).catch(err => {
                         console.log(err)
                     })
                 }
-                if (!auxBool) {
-                    botDis.channels.get("625189122637692948").send(usuario + ": " + caption + "\br" + "https://api.telegram.org/file/bot" + configTel.token + "/" + res.file_path);
-                }
+                botDis.channels.get("625189122637692948").send(usuario + ": " + caption + "\br" + "https://api.telegram.org/file/bot" + configTel.token + "/" + res.file_path);
             }).catch(err => console.log(err))
         }
     }
@@ -1070,15 +1008,20 @@ function toDiscord(mensaje, usuario, auxFile, chat, caption, auxBool) {
 
 //--------------------------------------Recordatorios, Cumpleaños y Eventos------------------------------------------------------------------
 setInterval(function recuerdame() {
+    var dir = './Bob_brain/recordatorios';
+
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
     var today = new Date();
-    var files = fs.readdirSync("./recordatorios");
+    var files = fs.readdirSync('./Bob_brain/recordatorios');
     console.log(files);
     for (item of files) {
-        var auxjson = fs.readJSONSync("./recordatorios/" + item);
+        var auxjson = require('./Bob_brain/recordatorios/' + item);
         console.log(item);
         let msg = "";
         for (let i = 0; i < auxjson.msg.length; i++) {
-            if (auxjson.msg.charAt(i) == "_") {
+            if (auxjson.msg.charAt(i) == '_') {
                 msg = msg + " ";
             } else {
                 msg = msg + auxjson.msg.charAt(i);
@@ -1095,25 +1038,30 @@ setInterval(function recuerdame() {
             eventos();
         }
         console.log(msg);
-        console.log("Es a las: " + auxjson.hora)
-        console.log("Son las: " + todayTime)
+        console.log('Es a las: ' + auxjson.hora)
+        console.log('Son las: ' + todayTime)
 
 
         if (auxjson.hora === todayTime && auxjson.estado !== "innactivo") {
-            botDis.channels.get("607821527404118022").send("<@" + auxjson.persona + "> : " + msg);
+            botDis.channels.get('607821527404118022').send("<@" + auxjson.persona + "> : " + msg);
         }
     }
     console.log("Recordatorios comprobados")
 }, 1 * 60 * 1000);
 
 function cumples() {
+    var dir = './Bob_brain/countdowns/cumples';
+
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
     var today = new Date();
     let currentyear = Number(today.getFullYear());
     console.log("Dias para fin de año:" + service.diasPara(today, service.refactorDate("01/01/" + (currentyear + 1))));
 
-    var files = fs.readdirSync("Bob_brain/countdowns/cumples");
+    var files = fs.readdirSync('./Bob_brain/countdowns/cumples/');
     for (let item of files) {
-        let json3 = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
+        let json3 = require("./Bob_brain/countdowns/cumples/" + item);
         if (service.diasPara(today, service.refactorDate(json3.codw)) == 0) {
             notificar(item.substring(7, item.length - 5), "felicitar");
         }
@@ -1124,7 +1072,7 @@ function cumples() {
             let json_cd = '{"codw":' + nuevaFecha + ',' +
                 '"categoria":' + json3.categoria +
                 '}';
-            fs.writeJSON("Bob_brain/countdowns/cumples/" + item, JSON.parse(json_cd), function (err, result) {
+            fs.writeJSON("./Bob_brain/countdowns/cumples/" + item, JSON.parse(json_cd), function (err, result) {
                 if (err) console.log('error', err);
             });
         }
@@ -1133,12 +1081,16 @@ function cumples() {
 cumples();
 
 function eventos() {
+    var dir = './Bob_brain/countdowns/eventos';
 
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
     var today = new Date();
-    var files = fs.readdirSync("Bob_brain/countdowns/eventos");
+    var files = fs.readdirSync('./Bob_brain/countdowns/eventos/');
 
     for (let item of files) {
-        let json3 = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
+        let json3 = require("./Bob_brain/countdowns/eventos/" + item);
         if (service.diasPara(today, service.refactorDate(json3.codw)) == 1 || service.diasPara(today, service.refactorDate(json3.codw)) == 0) {
             console.log("Evento: " + item.substring(7, item.length - 5) + " --aviso--");
         }
@@ -1148,7 +1100,7 @@ eventos();
 
 function notificar(nombre, motivo) {
     try {
-        if (motivo === "felicitar") {
+        if (motivo === 'felicitar') {
             botDis.channels.get("607821527404118022").send("<@" + service.user(nombre) + ">: " + "Feliz cumple !!!!!!1001010");
         }
 
@@ -1156,96 +1108,3 @@ function notificar(nombre, motivo) {
         console.log("[ERROR]", e)
     }
 }
-
-//-------------------Other--------------------------------
-// function getWarframeData(type, idChat, disTel, idUser) {
-//     //disTel = true --- Discord || false ----Telegram
-//     switch (type) {
-
-//         case "cetus":
-
-//             https.get("https://api.warframestat.us/pc/cetusCycle", function (res) {
-//                 // data is streamed in chunks from the server
-//                 // so we have to handle the "data" event    
-//                 var buffer = "",
-//                     data,
-//                     route;
-
-//                 res.on("data", function (chunk) {
-//                     buffer += chunk;
-//                 });
-
-//                 res.on("end", function (err) {
-//                     // finished transferring data
-//                     // dump the raw data
-//                     console.log("respuuuuuesta: ", JSON.parse(buffer));
-//                     console.log("\n");
-//                     if (disTel) {
-//                         botDis.channels.get(idChat).send("<@" + idUser + ">:" + JSON.stringify(JSON.parse(buffer)));
-
-//                     } else {
-//                         botTel.sendMessage(idChat.toString(), idUser + ": " + JSON.stringify(JSON.parse(buffer)));
-
-//                     }
-//                 });
-//             });
-
-//             break;
-
-//             // case "eventos":
-//             //     var cant = 0;
-//             //     var filesev = fs.readdirSync("Bob_brain/countdowns/eventos");
-//             //     message.channel.send("Dejame mirar por aquí...");
-
-//             //     for (let item of filesev) {
-//             //         let auxjson = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
-//             //         if (auxjson.categoria === "evento") {
-//             //             cant++;
-//             //             var m = await message.channel.send("El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
-//             //         }
-//             //     }
-//             //     if (cant == 0) {
-//             //         message.channel.send("No he encontrado nada :confused:");
-
-//             //     } else {
-//             //         message.channel.send("...y estas son mis " + cant + " coincidencias");
-//             //     }
-//             //     break;
-
-//             // case "todo":
-//             //     message.channel.send("Eventos Planeados:");
-
-//             //     var files = fs.readdirSync("Bob_brain/countdowns/eventos/");
-//             //     cant = 0;
-//             //     for (let item of files) {
-//             //         let auxjson = fs.readJSONSync("Bob_brain/countdowns/eventos/" + item);
-//             //         if (auxjson.categoria === "evento") {
-//             //             cant++;
-//             //             var m = await message.channel.send("El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
-//             //         }
-//             //     }
-//             //     if (cant == 0) {
-//             //         message.channel.send("No he encontrado eventos :confused:");
-//             //     }
-//             //     var cant2 = 0;
-//             //     var filescump = fs.readdirSync("Bob_brain/countdowns/cumples");
-
-//             //     message.channel.send("Cumpleaños Guardados:");
-//             //     for (let item of filescump) {
-//             //         let auxjson = fs.readJSONSync("Bob_brain/countdowns/cumples/" + item);
-//             //         if (auxjson.categoria === "cumple") {
-//             //             cant2++;
-//             //             var m = await message.channel.send("El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
-//             //         }
-//             //     }
-//             //     if (cant2 == 0) {
-//             //         message.channel.send("No he encontrado cumpleaños :confused:");
-
-//             //     }
-//             //     break;
-
-//         default:
-//             return "No he encontrado nada bajo la categoria: " + subver + " ¡Prueba con "cetus", "alertas" o "nightwave"!";
-
-//     }
-// }
