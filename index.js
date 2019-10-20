@@ -40,15 +40,16 @@ botTel.on("ready", () => {
 botDis.on("message", async message => {
     var adjunto = ""
     if ("attachments" in message) {
-        if(message.attachments.first()===undefined){
-            adjunto="";
-        }else{
-        adjunto = message.attachments.first().url;
+        if (message.attachments.first() === undefined) {
+            adjunto = "";
+        } else {
+            adjunto = message.attachments.first().url;
         }
     }
     var msg = message.content;
     var usuario = service.revuser(message.author.id);
     var chat = message.channel.id;
+    //Esto es lo que hace que funcione la magia de Telegram - Discord
     toTelegram(msg, usuario, chat, adjunto);
 });
 
@@ -67,7 +68,7 @@ botDis.on("message", async message => {
             const opcionesAyuda = args.join(" ");
             switch (opcionesAyuda) {
                 default:
-                    message.channel.send("Mis comandos son: \n crear \n ver \n cuantoquedapara \n d (tirar dados) \n limpia \n recordatorio \n tel \n sound \n Puedes saber mas de cada uno usando 'help' + comando");
+                    message.channel.send("```Mis comandos son: \n crear \n ver \n cuantoquedapara \n d (tirar dados) \n limpia \n recordatorio \n tel \n sound \n Puedes saber mas de cada uno usando 'help' + comando```");
                     break;
 
                 case "crear":
@@ -89,22 +90,19 @@ botDis.on("message", async message => {
                     message.channel.send("recordatorio: realiza una serie de acciones con el fin de construir un recordatorio para alguien o todos, para mas informacion usa el comando '.recordatorio'");
                     break;
                 case "sound":
-                    message.channel.send("sound + 'ara|araleo|cute|epic': reproduce en el canal un clip de sonido");
-                    break;
-                case "tel":
-                    message.channel.send("tel + 'mensaje': Envia un mensaje de parte del usuario al canal Weeznha de telegram");
+                    // message.channel.send("sound + 'ara|araleo|cute|epic': reproduce en el canal un clip de sonido");
+                    message.channel.send("```DESHABILITADO```");
                     break;
 
             }
             break;
 
         case "limpia":
-
-            const fetched = await message.channel.fetchMessages({
-                limit: 90
+            message.delete();
+            let fetched = await message.channel.fetchMessages({
+                limit: 50
             });
             message.channel.bulkDelete(fetched);
-
             message.channel.send("He barrido, aspirado y quitado el polvo de esto que llamais sala de chat");
             break;
 
@@ -473,112 +471,110 @@ botDis.on("message", async message => {
             break;
 
         case "sound":
-            var subcomando = args.join(" ").toLowerCase().split(" ");
+            var m = await message.channel.send("``` Actualmente se encuentra deshabilitado ```");
 
-            if (subcomando.length == 1) {
-                switch (subcomando[0]) {
+            // var subcomando = args.join(" ").toLowerCase().split(" ");
 
-                    default:
-                        message.channel.send("Los sonidos son: ara, araleo, epic y cute (ej .sound ara)");
-                        break;
+            // if (subcomando.length == 1) {
+            //     switch (subcomando[0]) {
 
-                    case "ara":
-                        var voiceChannel = message.member.voiceChannel;
-                        nombre = message.member.id;
-                        if (voiceChannel == undefined) {
-                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                        } else {
-                            voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./Bob_brain/sound/ara.mp3');
-                                dispatcher.setVolume(10);
-                                dispatcher.on("end", end => {
-                                    voiceChannel.leave();
-                                });
-                            }).catch(err => {
-                                console.log(err)
-                            })
-                        }
-                        break;
+            //         default:
+            //             message.channel.send("Los sonidos son: ara, araleo, epic y cute (ej .sound ara)");
+            //             break;
 
-                    case "epic":
-                        var voiceChannel = message.member.voiceChannel;
-                        nombre = message.member.id;
-                        if (voiceChannel == undefined) {
-                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                        } else {
-                            voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./Bob_brain/sound/gio.mp3');
-                                dispatcher.setVolume(0.5);
-                                dispatcher.on("end", end => {
-                                    voiceChannel.leave();
-                                });
-                            }).catch(err => {
-                                console.log(err)
-                            })
-                        }
-                        break;
-                    case "voy":
-                        var voiceChannel = message.member.voiceChannel;
-                        nombre = message.member.id;
-                        if (voiceChannel == undefined) {
-                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                        } else {
-                            voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./Bob_brain/sound/pipo.mp3');
-                                dispatcher.setVolume(15);
-                                dispatcher.on("end", end => {
-                                    voiceChannel.leave();
-                                });
-                            }).catch(err => {
-                                console.log(err)
-                            })
-                        }
-                        break;
-                    case "araleo":
-                        var voiceChannel = message.member.voiceChannel;
-                        nombre = message.member.id;
-                        if (voiceChannel == undefined) {
-                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                        } else {
-                            voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./Bob_brain/sound/araleo.wav');
-                                dispatcher.setVolume(10);
-                                dispatcher.on("end", end => {
-                                    voiceChannel.leave();
-                                });
-                            }).catch(err => {
-                                console.log(err)
-                            })
-                        }
-                        break;
+            //         case "ara":
+            //             var voiceChannel = message.member.voiceChannel;
+            //             nombre = message.member.id;
+            //             if (voiceChannel == undefined) {
+            //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+            //             } else {
+            //                 voiceChannel.join().then(connection => {
+            //                     const dispatcher = connection.playFile('./Bob_brain/sound/ara.mp3');
+            //                     dispatcher.setVolume(10);
+            //                     dispatcher.on("end", end => {
+            //                         voiceChannel.leave();
+            //                     });
+            //                 }).catch(err => {
+            //                     console.log(err)
+            //                 })
+            //             }
+            //             break;
 
-                    case "cute":
-                        var voiceChannel = message.member.voiceChannel;
-                        nombre = message.member.id;
-                        if (voiceChannel == undefined) {
-                            message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                        } else {
-                            voiceChannel.join().then(connection => {
-                                const dispatcher = connection.playFile('./Bob_brain/sound/pudi.mp3');
-                                dispatcher.setVolume(0.7);
-                                dispatcher.on("end", end => {
-                                    voiceChannel.leave();
-                                });
-                            }).catch(err => {
-                                console.log(err)
-                            })
-                        }
-                        break;
-                }
-            } else {
-                message.channel.send("<@" + nombre + ">: " + "No es el formato correcto");
-            }
+            //         case "epic":
+            //             var voiceChannel = message.member.voiceChannel;
+            //             nombre = message.member.id;
+            //             if (voiceChannel == undefined) {
+            //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+            //             } else {
+            //                 voiceChannel.join().then(connection => {
+            //                     const dispatcher = connection.playFile('./Bob_brain/sound/gio.mp3');
+            //                     dispatcher.setVolume(0.5);
+            //                     dispatcher.on("end", end => {
+            //                         voiceChannel.leave();
+            //                     });
+            //                 }).catch(err => {
+            //                     console.log(err)
+            //                 })
+            //             }
+            //             break;
+            //         case "voy":
+            //             var voiceChannel = message.member.voiceChannel;
+            //             nombre = message.member.id;
+            //             if (voiceChannel == undefined) {
+            //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+            //             } else {
+            //                 voiceChannel.join().then(connection => {
+            //                     const dispatcher = connection.playFile('./Bob_brain/sound/pipo.mp3');
+            //                     dispatcher.setVolume(15);
+            //                     dispatcher.on("end", end => {
+            //                         voiceChannel.leave();
+            //                     });
+            //                 }).catch(err => {
+            //                     console.log(err)
+            //                 })
+            //             }
+            //             break;
+            //         case "araleo":
+            //             var voiceChannel = message.member.voiceChannel;
+            //             nombre = message.member.id;
+            //             if (voiceChannel == undefined) {
+            //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+            //             } else {
+            //                 voiceChannel.join().then(connection => {
+            //                     const dispatcher = connection.playFile('./Bob_brain/sound/araleo.wav');
+            //                     dispatcher.setVolume(10);
+            //                     dispatcher.on("end", end => {
+            //                         voiceChannel.leave();
+            //                     });
+            //                 }).catch(err => {
+            //                     console.log(err)
+            //                 })
+            //             }
+            //             break;
+
+            //         case "cute":
+            //             var voiceChannel = message.member.voiceChannel;
+            //             nombre = message.member.id;
+            //             if (voiceChannel == undefined) {
+            //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+            //             } else {
+            //                 voiceChannel.join().then(connection => {
+            //                     const dispatcher = connection.playFile('./Bob_brain/sound/pudi.mp3');
+            //                     dispatcher.setVolume(0.7);
+            //                     dispatcher.on("end", end => {
+            //                         voiceChannel.leave();
+            //                     });
+            //                 }).catch(err => {
+            //                     console.log(err)
+            //                 })
+            //             }
+            //             break;
+            //     }
+            // } else {
+            //     message.channel.send("<@" + nombre + ">: " + "No es el formato correcto");
+            // }
             break;
 
-        case "tel":
-            var mensaje = args.join(" ");
-            var usuario = service.revuser(message.member.id);
-            toTelegram(mensaje, usuario);
     }
 });
 
@@ -609,6 +605,7 @@ botTel.on("message", async message => {
     var caption = message.caption;
     var auxFile = botTel.getFile(fileId)
     var chat = message.chat.id;
+    //Esto es lo que hace que funcione la magia de Telegram - Discord
     toDiscord(msg, usuario, auxFile, chat, caption, audio);
 });
 
@@ -646,15 +643,12 @@ botTel.on("message", async message => {
                     case "cuantoquedapara":
                         botTel.sendMessage(message.chat.id, "cuantoquedapara + 'nombre de cuenta atras': te muestro los dias que quedan para llegar a esa fecha");
                         break;
-                    case "d":
-                        botTel.sendMessage(message.chat.id, "d + 'numeroDeDados'd'nºdecaras': te lanzo el numero de dados que quieras con las caras que decidas");
-                        break;
-                    case "sound":
-                        botTel.sendMessage(message.chat.id, "sound + 'ara|araleo|cute|epic|voy': reproduce en el canal de filosofacion(Discord) un clip de sonido");
-                        break;
-                    case "disc":
-                        botTel.sendMessage(message.chat.id, "disc + 'mensaje': Envia un mensaje de parte del usuario a un canal de mensajes de telegram en discord");
-                        break;
+                    // case "d":
+                    //     botTel.sendMessage(message.chat.id, "d + 'numeroDeDados'd'nºdecaras': te lanzo el numero de dados que quieras con las caras que decidas");
+                    //     break;
+                    // case "sound":
+                    //     botTel.sendMessage(message.chat.id, "sound + 'ara|araleo|cute|epic|voy': reproduce en el canal de filosofacion(Discord) un clip de sonido");
+                    //     break;
                 }
                 break;
 
@@ -852,47 +846,42 @@ botTel.on("message", async message => {
                 }
                 break;
 
-            case "d":
+            // case "d":
 
 
-                const opcionesDado = args.join(" ");
-                let numDados = "";
-                let count = 0;
+            //     const opcionesDado = args.join(" ");
+            //     let numDados = "";
+            //     let count = 0;
 
-                while (opcionesDado.charAt(count) != 'd') {
-                    numDados += opcionesDado.charAt(count);
-                    count++;
-                }
+            //     while (opcionesDado.charAt(count) != 'd') {
+            //         numDados += opcionesDado.charAt(count);
+            //         count++;
+            //     }
 
-                let carasDado = opcionesDado.substring(count + 1, opcionesDado.length);
+            //     let carasDado = opcionesDado.substring(count + 1, opcionesDado.length);
 
-                if (Number(numDados) && Number(carasDado)) {
-                    let numeroDados = numDados;
-                    let contadorDeDado = 0
-                    while (numeroDados != 0) {
-                        contadorDeDado += 1;
-                        let max = Number(carasDado) + 1;
-                        let random = Math.floor(Math.random() * (max - 1)) + 1;
-                        botTel.sendMessage(message.chat.id, "Te ha salido un: " + random + " en el dado número " + contadorDeDado + " de " + carasDado + " caras");
-                        numeroDados--;
-                    }
-                } else {
-                    botTel.sendMessage(message.chat.id, "Eso no es un número válido de caras de un dado pillín");
-                }
-                break;
+            //     if (Number(numDados) && Number(carasDado)) {
+            //         let numeroDados = numDados;
+            //         let contadorDeDado = 0
+            //         while (numeroDados != 0) {
+            //             contadorDeDado += 1;
+            //             let max = Number(carasDado) + 1;
+            //             let random = Math.floor(Math.random() * (max - 1)) + 1;
+            //             botTel.sendMessage(message.chat.id, "Te ha salido un: " + random + " en el dado número " + contadorDeDado + " de " + carasDado + " caras");
+            //             numeroDados--;
+            //         }
+            //     } else {
+            //         botTel.sendMessage(message.chat.id, "Eso no es un número válido de caras de un dado pillín");
+            //     }
+            //     break;
 
             case "sound":
+                botTel.sendMessage(message.chat.id, "Actualmente se encuentra deshabilitado");
 
-                var subcomando = args.join(" ").toLowerCase().split(" ");
+                // var subcomando = args.join(" ").toLowerCase().split(" ");
 
-                telegramAnnoy(subcomando[0]);
+                // telegramAnnoy(subcomando[0]);
                 break;
-
-            case "disc":
-                var mensaje = message.text.substring(5, message.text.length);
-                var usuario = message.from.first_name;
-                var chat = message.chat.id;
-                toDiscord(mensaje, usuario, chat);
 
         }
     }
@@ -901,72 +890,72 @@ botTel.on("message", async message => {
 
 //------------------------------------------------Cross-Comunicacion-------------------------------------------------------------------------
 
-function telegramAnnoy(sound) {
+// function telegramAnnoy(sound) {
 
-    switch (sound) {
+//     switch (sound) {
 
-        case "ara":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('../Bob_brain/sound/ara.mp3');
-                dispatcher.setVolume(10);
-                dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-            break;
+//         case "ara":
+//             botDis.channels.get('587668857788039169').join().then(connection => {
+//                 const dispatcher = connection.playFile('../Bob_brain/sound/ara.mp3');
+//                 dispatcher.setVolume(10);
+//                 dispatcher.on("end", end => {
+//                     botDis.channels.get('587668857788039169').leave();
+//                 });
+//             }).catch(err => {
+//                 console.log(err)
+//             })
+//             break;
 
-        case "epic":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('../Bob_brain/sound/gio.mp3');
-                dispatcher.setVolume(0.5);
-                dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-            break;
+//         case "epic":
+//             botDis.channels.get('587668857788039169').join().then(connection => {
+//                 const dispatcher = connection.playFile('../Bob_brain/sound/gio.mp3');
+//                 dispatcher.setVolume(0.5);
+//                 dispatcher.on("end", end => {
+//                     botDis.channels.get('587668857788039169').leave();
+//                 });
+//             }).catch(err => {
+//                 console.log(err)
+//             })
+//             break;
 
-        case "voy":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('./Bob_brain/sound/pipo.mp3');
-                dispatcher.setVolume(15);
-                dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
+//         case "voy":
+//             botDis.channels.get('587668857788039169').join().then(connection => {
+//                 const dispatcher = connection.playFile('./Bob_brain/sound/pipo.mp3');
+//                 dispatcher.setVolume(15);
+//                 dispatcher.on("end", end => {
+//                     botDis.channels.get('587668857788039169').leave();
+//                 });
+//             }).catch(err => {
+//                 console.log(err)
+//             })
 
-            break;
+//             break;
 
-        case "araleo":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('../Bob_brain/sound/araleo.wav');
-                dispatcher.setVolume(10);
-                dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-            break;
+//         case "araleo":
+//             botDis.channels.get('587668857788039169').join().then(connection => {
+//                 const dispatcher = connection.playFile('../Bob_brain/sound/araleo.wav');
+//                 dispatcher.setVolume(10);
+//                 dispatcher.on("end", end => {
+//                     botDis.channels.get('587668857788039169').leave();
+//                 });
+//             }).catch(err => {
+//                 console.log(err)
+//             })
+//             break;
 
-        case "cute":
-            botDis.channels.get('587668857788039169').join().then(connection => {
-                const dispatcher = connection.playFile('../Bob_brain/sound/pudi.mp3');
-                dispatcher.setVolume(0.7);
-                dispatcher.on("end", end => {
-                    botDis.channels.get('587668857788039169').leave();
-                });
-            }).catch(err => {
-                console.log(err)
-            })
-            break;
-    }
-}
+//         case "cute":
+//             botDis.channels.get('587668857788039169').join().then(connection => {
+//                 const dispatcher = connection.playFile('../Bob_brain/sound/pudi.mp3');
+//                 dispatcher.setVolume(0.7);
+//                 dispatcher.on("end", end => {
+//                     botDis.channels.get('587668857788039169').leave();
+//                 });
+//             }).catch(err => {
+//                 console.log(err)
+//             })
+//             break;
+//     }
+// }
 
 function toTelegram(mensaje, usuario, chat, adjunto) {
     if (chat == 625189122637692948 && usuario != "Bob" && usuario != "nadie") {
