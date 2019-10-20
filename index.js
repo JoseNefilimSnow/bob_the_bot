@@ -12,6 +12,7 @@ const botTel = new TelegramBot(process.env.TOKEN_TELEGRAM, {
     polling: true
 });
 const botDis = new Discord.Client();
+
 botDis.login(process.env.TOKEN_DISCORD);
 
 // -------------------------------------------------------------------------------
