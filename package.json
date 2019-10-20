@@ -4,7 +4,7 @@
   "description": "So its bigger...",
   "main": "index.js",
   "scripts": {
-    "start": "node Bob_brain/index.js"
+    "start": "node index.js"
   },
   "author": "guri",
   "license": "ISC",
