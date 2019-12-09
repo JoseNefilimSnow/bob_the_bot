@@ -643,12 +643,12 @@ botTel.on("message", async message => {
                     case "cuantoquedapara":
                         botTel.sendMessage(message.chat.id, "cuantoquedapara + 'nombre de cuenta atras': te muestro los dias que quedan para llegar a esa fecha");
                         break;
-                    // case "d":
-                    //     botTel.sendMessage(message.chat.id, "d + 'numeroDeDados'd'nºdecaras': te lanzo el numero de dados que quieras con las caras que decidas");
-                    //     break;
-                    // case "sound":
-                    //     botTel.sendMessage(message.chat.id, "sound + 'ara|araleo|cute|epic|voy': reproduce en el canal de filosofacion(Discord) un clip de sonido");
-                    //     break;
+                        // case "d":
+                        //     botTel.sendMessage(message.chat.id, "d + 'numeroDeDados'd'nºdecaras': te lanzo el numero de dados que quieras con las caras que decidas");
+                        //     break;
+                        // case "sound":
+                        //     botTel.sendMessage(message.chat.id, "sound + 'ara|araleo|cute|epic|voy': reproduce en el canal de filosofacion(Discord) un clip de sonido");
+                        //     break;
                 }
                 break;
 
@@ -846,34 +846,34 @@ botTel.on("message", async message => {
                 }
                 break;
 
-            // case "d":
+                // case "d":
 
 
-            //     const opcionesDado = args.join(" ");
-            //     let numDados = "";
-            //     let count = 0;
+                //     const opcionesDado = args.join(" ");
+                //     let numDados = "";
+                //     let count = 0;
 
-            //     while (opcionesDado.charAt(count) != 'd') {
-            //         numDados += opcionesDado.charAt(count);
-            //         count++;
-            //     }
+                //     while (opcionesDado.charAt(count) != 'd') {
+                //         numDados += opcionesDado.charAt(count);
+                //         count++;
+                //     }
 
-            //     let carasDado = opcionesDado.substring(count + 1, opcionesDado.length);
+                //     let carasDado = opcionesDado.substring(count + 1, opcionesDado.length);
 
-            //     if (Number(numDados) && Number(carasDado)) {
-            //         let numeroDados = numDados;
-            //         let contadorDeDado = 0
-            //         while (numeroDados != 0) {
-            //             contadorDeDado += 1;
-            //             let max = Number(carasDado) + 1;
-            //             let random = Math.floor(Math.random() * (max - 1)) + 1;
-            //             botTel.sendMessage(message.chat.id, "Te ha salido un: " + random + " en el dado número " + contadorDeDado + " de " + carasDado + " caras");
-            //             numeroDados--;
-            //         }
-            //     } else {
-            //         botTel.sendMessage(message.chat.id, "Eso no es un número válido de caras de un dado pillín");
-            //     }
-            //     break;
+                //     if (Number(numDados) && Number(carasDado)) {
+                //         let numeroDados = numDados;
+                //         let contadorDeDado = 0
+                //         while (numeroDados != 0) {
+                //             contadorDeDado += 1;
+                //             let max = Number(carasDado) + 1;
+                //             let random = Math.floor(Math.random() * (max - 1)) + 1;
+                //             botTel.sendMessage(message.chat.id, "Te ha salido un: " + random + " en el dado número " + contadorDeDado + " de " + carasDado + " caras");
+                //             numeroDados--;
+                //         }
+                //     } else {
+                //         botTel.sendMessage(message.chat.id, "Eso no es un número válido de caras de un dado pillín");
+                //     }
+                //     break;
 
             case "sound":
                 botTel.sendMessage(message.chat.id, "Actualmente se encuentra deshabilitado");
@@ -1060,7 +1060,7 @@ function cumples() {
             var anio = (currentyear + 1);
             var nuevaFecha = '"' + json3.codw.substring(0, 6) + anio + '"';
             let json_cd = '{"codw":' + nuevaFecha + ',' +
-                '"categoria":' + json3.categoria +
+                '"categoria":' + '"' + json3.categoria + '"' +
                 '}';
             fs.writeJSON("./Bob_brain/countdowns/cumples/" + item, JSON.parse(json_cd), function (err, result) {
                 if (err) console.log('error', err);
