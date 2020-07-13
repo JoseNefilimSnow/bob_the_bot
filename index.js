@@ -154,12 +154,12 @@ botDis.on("message", async message => {
                     var cant = 0;
                     var filescump = fs.readdirSync('./Bob_brain/countdowns/cumples');
                     message.channel.send("Dejame mirar por aquí...");
-                    let cumples;
+                    let cumples = "";
 
                     for (let item of filescump) {
                         let auxjson = require("./Bob_brain/countdowns/cumples/" + item);
                         if (auxjson.categoria === "cumple") {
-                            cumples += item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw
+                            cumples += item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw + "\n"
                             cant++;
                         }
                     }
@@ -167,7 +167,7 @@ botDis.on("message", async message => {
                         message.channel.send("No he encontrado nada :confused:");
 
                     } else {
-                        var m = await message.channel.send("```El evento de categoria cumpleaños con titulo: " + cumples + "```");
+                        var m = await message.channel.send("```El evento de categoria cumpleaños con titulo: \n" + cumples + "```");
                         message.channel.send("...y estas son mis " + cant + " coincidencias");
                     }
                     break;
@@ -176,12 +176,12 @@ botDis.on("message", async message => {
                     var cant = 0;
                     var filesev = fs.readdirSync('./Bob_brain/countdowns/eventos');
                     message.channel.send("Dejame mirar por aquí...");
-                    let eventos;
+                    let eventos = "";
 
                     for (let item of filesev) {
                         let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                         if (auxjson.categoria === "evento") {
-                            eventos += item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw
+                            eventos += item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw + "\n"
                             cant++;
                         }
                     }
@@ -189,7 +189,7 @@ botDis.on("message", async message => {
                         message.channel.send("No he encontrado nada :confused:");
 
                     } else {
-                        var m = await message.channel.send("```Los eventos son: " + eventos + "```");
+                        var m = await message.channel.send("```Los eventos son: " + "\n" + eventos + "```");
                         message.channel.send("...y estas son mis " + cant + " coincidencias");
                     }
                     break;
@@ -199,18 +199,18 @@ botDis.on("message", async message => {
 
                     var files = fs.readdirSync('./Bob_brain/countdowns/eventos/');
                     cant = 0;
-                    let todo
+                    let todo = "";
                     for (let item of files) {
                         let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                         if (auxjson.categoria === "evento") {
                             cant++;
-                            todo = item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw
+                            todo = item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw + "\n"
                         }
                     }
                     if (cant == 0) {
                         message.channel.send("No he encontrado eventos :confused:");
                     } else {
-                        var m = await message.channel.send("```Todo lo que tengo guardado es: " + todo + "```");
+                        var m = await message.channel.send("```Todo lo que tengo guardado es: " + "\n" + todo + "```");
                     }
                     var cant2 = 0;
                     var filescump = fs.readdirSync('./Bob_brain/countdowns/cumples');
