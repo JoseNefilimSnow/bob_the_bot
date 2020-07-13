@@ -698,18 +698,20 @@ botTel.on("message", async message => {
                         var cant = 0;
                         var filescump = fs.readdirSync('./Bob_brain/countdowns/cumples');
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
+                        let cumples = "";
 
                         for (let item of filescump) {
                             let auxjson = require("./Bob_brain/countdowns/cumples/" + item);
                             if (auxjson.categoria === "cumple") {
                                 cant++;
-                                var m = await botTel.sendMessage(message.chat.id, "El evento de categoria cumpleaños con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
+                                cumples += item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw + "\n"
                             }
                         }
                         if (cant == 0) {
                             botTel.sendMessage(message.chat.id, "No he encontrado nada :confused:");
 
                         } else {
+                            var m = await botTel.sendMessage(message.chat.id, " ``` El evento de categoria cumpleaños con titulo: " + "\n" + cumples + "```");
                             botTel.sendMessage(message.chat.id, "...y estas son mis " + cant + " coincidencias");
                         }
                         break;
@@ -718,18 +720,20 @@ botTel.on("message", async message => {
                         var cant = 0;
                         var filesev = fs.readdirSync('./Bob_brain/countdowns/eventos');
                         botTel.sendMessage(message.chat.id, "Dejame mirar por aquí...");
+                        let eventos = "";
 
                         for (let item of filesev) {
                             let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                             if (auxjson.categoria === "evento") {
                                 cant++;
-                                var m = await botTel.sendMessage(message.chat.id, "El evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
+                                eventos += item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw + "\n"
                             }
                         }
                         if (cant == 0) {
                             botTel.sendMessage(message.chat.id, "No he encontrado nada :confused:");
 
                         } else {
+                            var m = await botTel.sendMessage(message.chat.id, " ``` El evento con titulo: " + "\n" + eventos + "```");
                             botTel.sendMessage(message.chat.id, "...y estas son mis " + cant + " coincidencias");
                         }
                         break;
@@ -739,15 +743,18 @@ botTel.on("message", async message => {
 
                         var files = fs.readdirSync('./Bob_brain/countdowns/eventos/');
                         cant = 0;
+                        let todo = "";
                         for (let item of files) {
                             let auxjson = require("./Bob_brain/countdowns/eventos/" + item);
                             if (auxjson.categoria === "evento") {
                                 cant++;
-                                var m = await botTel.sendMessage(message.chat.id, "El evento de categoria evento con titulo: " + item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw);
+                                todo += item.substring(0, item.length - 5) + "\n Es el día: " + auxjson.codw + "\n";
                             }
                         }
                         if (cant == 0) {
                             botTel.sendMessage(message.chat.id, "No he encontrado eventos :confused:");
+                        } else {
+                            var m = await botTel.sendMessage(message.chat.id, "``` El evento de categoria evento con titulo: " + );
                         }
                         var cant2 = 0;
                         var filescump = fs.readdirSync('./Bob_brain/countdowns/cumples');
