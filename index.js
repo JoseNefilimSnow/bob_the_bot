@@ -162,7 +162,7 @@ botDis.on("message", async message => {
 
                 const setFecha = args.join(" ").split(" ");
 
-                if (setFecha.length > 3 || setFecha.length < 2) {
+                if (setFecha.length > 3 || setFecha.length <= 2) {
 
                     message.channel.send("Algo aquí no va bien... prueba a no dejar espacios en el nombre de la cuenta atras o comprobar el mensaje :grin:");
                     return;
@@ -690,7 +690,7 @@ botTel.on("message", async message => {
 
                     const setFecha = args.join(" ").split(" ");
 
-                    if (setFecha.length > 3 || setFecha.length < 2) {
+                    if (setFecha.length > 3 || setFecha.length <= 2) {
 
                         botTel.sendMessage(message.chat.id, "Algo aquí no va bien... prueba a no dejar espacios en el nombre de la cuenta atras o buscar algun fallo, recuerda /crear nombre/evento fecha ;)");
                         return;
