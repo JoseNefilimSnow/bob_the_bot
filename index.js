@@ -4,8 +4,7 @@ const fs = require('fs-extra');
 const TelegramBot = require('node-telegram-bot-api');
 const Discord = require('discord.js');
 const https = require('https');
-const Rae = require('rae');
-const raeClient = Rae.create();
+const ytdl = require('ytdl-core');
 const configTel = require("./Bob_brain/configTel.json");
 const configDis = require("./Bob_brain/configDis.json");
 const service = require("./service.js");
@@ -24,13 +23,16 @@ console.log('Iniciando...');
 
 //Ininiamos el bot en Discord
 
-botDis.on("", () => {
+botDis.on("ready", () => {
     //Cuando se inicia, el bot imprimira lo siguiente:
     console.log(`Bob Esta Dentro`);
     // Ahora añadimos un estado por los memes al bot:
     botDis.user.setActivity("¡ '.help' para ayuda!");
+    //Comprobación de cumples cada vez que se inicia el bot
+
 
 });
+setInterval(updateCumples, 43200000);
 
 //Iniciamos el bot en Telegram
 
@@ -91,9 +93,6 @@ botDis.on("message", async message => {
         if ((await bd.buscar('usuarios', {
                 usernameDis: message.author.username
             })).resultado[0].idDis == "") {
-            console.log("entro aqui", (await bd.buscar('usuarios', {
-                usernameDis: message.author.username
-            })).resultado[0])
 
             const overwrite = (await bd.buscar('usuarios', {
                 usernameDis: message.author.username
@@ -113,7 +112,7 @@ botDis.on("message", async message => {
                 const opcionesAyuda = args.join(" ");
                 switch (opcionesAyuda) {
                     default:
-                        message.channel.send("```Mis comandos son: \n crear \n ver \n dias \n d (tirar dados) \n limpia \n Puedes saber mas de cada uno usando 'help' + comando```");
+                        message.channel.send("```Mis comandos son: \n crear \n ver \n dias \n d (tirar dados) \n limpia \n culture \n Puedes saber mas de cada uno usando 'help' + comando```");
                         break;
 
                     case "crear":
@@ -131,6 +130,8 @@ botDis.on("message", async message => {
                     case "limpia":
                         message.channel.send("limpia + numero de mensajes que quieres borrar + veces que se repite : borra hasta 99 mensajes del chat actual... no puedo borrar mas de 100 pero puedo hacer una trampa fea que Jose conoce");
                         break;
+                    case "culture":
+                        message.channel.send(";)")
                         // case "recordatorio":
                         //     message.channel.send("recordatorio: realiza una serie de acciones con el fin de construir un recordatorio para alguien o todos, para mas informacion usa el comando '.recordatorio'");
                         //     break;
@@ -142,11 +143,11 @@ botDis.on("message", async message => {
                 }
                 break;
 
-            case "identificar":
-                console.log(bd.identificarIdDis('usuarios', {
-                    usernameDis: message.author.username
-                }, message.author.id).then(res => console.log(res)))
-                break;
+                // case "identificar":
+                //     console.log(bd.identificarIdDis('usuarios', {
+                //         usernameDis: message.author.username
+                //     }, message.author.id).then(res => console.log(res)))
+                //     break;
 
             case "limpia":
                 message.delete();
@@ -190,7 +191,7 @@ botDis.on("message", async message => {
 
                     if (cat === '"cumple"') {
 
-                        bd.insertar('cumpleaños', JSON.parse(json_cumple)).then(res => cumples());
+                        bd.insertar('cumples', JSON.parse(json_cumple)).then(res => cumples());
                         message.channel.send("¡He creado la cuenta atras!");
 
 
@@ -215,7 +216,7 @@ botDis.on("message", async message => {
 
                     case "cumples":
 
-                        const cumples = await bd.buscar('cumpleaños');
+                        const cumples = await bd.buscar('cumples');
 
                         let cumplesDisplay = "";
                         for (let cumple of cumples.resultado) {
@@ -267,7 +268,7 @@ botDis.on("message", async message => {
                         }
 
                         message.channel.send("Cumpleaños Guardados:");
-                        const cumples2 = await bd.buscar('cumpleaños');
+                        const cumples2 = await bd.buscar('cumples');
 
                         let cumplesDisplay2 = "";
                         for (let cumple of cumples2.resultado) {
@@ -295,7 +296,7 @@ botDis.on("message", async message => {
 
                 switch (cuentaAtras[0].toLowerCase()) {
                     case "cumple":
-                        let cumples = bd.buscar('cumpleaños')
+                        let cumples = bd.buscar('cumples')
                         let personas = "";
 
                         if (cuentaAtras[1] == undefined) {
@@ -315,18 +316,38 @@ botDis.on("message", async message => {
                             break;
 
                         } else {
-                            let cumple = bd.buscar('cumpleaños', {
+                            bd.buscar('cumples', {
                                 "persona": cuentaAtras[1]
-                            })
-                            message.channel.send("Dejame calcular...");
-                            var cadate = service.refactorDate((await cumple).resultado[0].codw);
+                            }).then(cumple => {
 
-                            var m = await message.channel.send("Quedan" + " " + service.diasPara(today, cadate) + " " + "dias");
-                            if (service.diasPara(today, cadate) < 0) {
-                                var m = await message.channel.send("Creo que esta fecha ya ha pasado...");
-                            } else if (service.diasPara(today, cadate) == 0) {
-                                var m = await message.channel.send("ES HOY :smiling_imp:");
-                            }
+                                if (cumple.resultado.length == 0) {
+                                    bd.buscar('cumples').then(arrCumples => {
+                                        message.channel.send("No puedes dejarme sin saber de quien es el cumple :cry:");
+                                        message.channel.send("Estos son los posibles");
+                                        for (let cumple of arrCumples.resultado) {
+                                            personas += cumple.persona + "\n";
+                                        }
+                                        if (personas.length == 0) {
+                                            message.channel.send("...No he encontrado nada :confused:");
+
+                                        } else {
+                                            message.channel.send("```" + personas + "```");
+
+                                        }
+                                    })
+                                } else {
+                                    message.channel.send("Dejame calcular...");
+                                    var cadate = service.refactorDate(cumple.codw);
+
+                                    var m = message.channel.send("Quedan" + " " + service.diasPara(today, cadate) + " " + "dias");
+                                    if (service.diasPara(today, cadate) < 0) {
+                                        var m = message.channel.send("Creo que esta fecha ya ha pasado...");
+                                    } else if (service.diasPara(today, cadate) == 0) {
+                                        var m = message.channel.send("ES HOY :smiling_imp:");
+                                    }
+                                }
+
+                            })
                         }
                         break;
 
@@ -440,110 +461,119 @@ botDis.on("message", async message => {
                 break;
 
             case "sound":
-                var m = await message.channel.send("``` Actualmente se encuentra deshabilitado ```");
 
-                // var subcomando = args.join(" ").toLowerCase().split(" ");
+                // var m = await message.channel.send("``` Actualmente se encuentra deshabilitado ```");
+                if (!fs.existsSync('./Bob_Brain/resources')) {
+                    var m = await message.channel.send("``` Actualmente se encuentra deshabilitado ```");
+                } else {
 
-                // if (subcomando.length == 1) {
-                //     switch (subcomando[0]) {
+                    var subcomando = args.join(" ").toLowerCase().split(" ");
 
-                //         default:
-                //             message.channel.send("Los sonidos son: ara, araleo, epic y cute (ej .sound ara)");
-                //             break;
+                    if (subcomando.length == 1) {
+                        switch (subcomando[0]) {
 
-                //         case "ara":
-                //             var voiceChannel = message.member.voiceChannel;
-                //             nombre = message.member.id;
-                //             if (voiceChannel == undefined) {
-                //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                //             } else {
-                //                 voiceChannel.join().then(connection => {
-                //                     const dispatcher = connection.playFile('./Bob_brain/sound/ara.mp3');
-                //                     dispatcher.setVolume(10);
-                //                     dispatcher.on("end", end => {
-                //                         voiceChannel.leave();
-                //                     });
-                //                 }).catch(err => {
-                //                     console.log(err)
-                //                 })
-                //             }
-                //             break;
+                            default:
+                                message.channel.send("Los sonidos son: ara, araleo, epic y cute (ej .sound ara)");
+                                break;
 
-                //         case "epic":
-                //             var voiceChannel = message.member.voiceChannel;
-                //             nombre = message.member.id;
-                //             if (voiceChannel == undefined) {
-                //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                //             } else {
-                //                 voiceChannel.join().then(connection => {
-                //                     const dispatcher = connection.playFile('./Bob_brain/sound/gio.mp3');
-                //                     dispatcher.setVolume(0.5);
-                //                     dispatcher.on("end", end => {
-                //                         voiceChannel.leave();
-                //                     });
-                //                 }).catch(err => {
-                //                     console.log(err)
-                //                 })
-                //             }
-                //             break;
-                //         case "voy":
-                //             var voiceChannel = message.member.voiceChannel;
-                //             nombre = message.member.id;
-                //             if (voiceChannel == undefined) {
-                //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                //             } else {
-                //                 voiceChannel.join().then(connection => {
-                //                     const dispatcher = connection.playFile('./Bob_brain/sound/pipo.mp3');
-                //                     dispatcher.setVolume(15);
-                //                     dispatcher.on("end", end => {
-                //                         voiceChannel.leave();
-                //                     });
-                //                 }).catch(err => {
-                //                     console.log(err)
-                //                 })
-                //             }
-                //             break;
-                //         case "araleo":
-                //             var voiceChannel = message.member.voiceChannel;
-                //             nombre = message.member.id;
-                //             if (voiceChannel == undefined) {
-                //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                //             } else {
-                //                 voiceChannel.join().then(connection => {
-                //                     const dispatcher = connection.playFile('./Bob_brain/sound/araleo.wav');
-                //                     dispatcher.setVolume(10);
-                //                     dispatcher.on("end", end => {
-                //                         voiceChannel.leave();
-                //                     });
-                //                 }).catch(err => {
-                //                     console.log(err)
-                //                 })
-                //             }
-                //             break;
+                            case "ara":
+                                var voiceChannel = message.member.voiceChannel;
+                                nombre = message.member.id;
+                                if (voiceChannel == undefined) {
+                                    message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+                                } else {
+                                    voiceChannel.join().then(connection => {
+                                        const dispatcher = connection.playFile('./Bob_brain/resources/ara.mp3');
+                                        dispatcher.setVolume(10);
+                                        dispatcher.on("end", end => {
+                                            voiceChannel.leave();
+                                        });
+                                    }).catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+                                break;
 
-                //         case "cute":
-                //             var voiceChannel = message.member.voiceChannel;
-                //             nombre = message.member.id;
-                //             if (voiceChannel == undefined) {
-                //                 message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
-                //             } else {
-                //                 voiceChannel.join().then(connection => {
-                //                     const dispatcher = connection.playFile('./Bob_brain/sound/pudi.mp3');
-                //                     dispatcher.setVolume(0.7);
-                //                     dispatcher.on("end", end => {
-                //                         voiceChannel.leave();
-                //                     });
-                //                 }).catch(err => {
-                //                     console.log(err)
-                //                 })
-                //             }
-                //             break;
-                //     }
-                // } else {
-                //     message.channel.send("<@" + nombre + ">: " + "No es el formato correcto");
-                // }
+                            case "epic":
+                                var voiceChannel = message.member.voiceChannel;
+                                nombre = message.member.id;
+                                if (voiceChannel == undefined) {
+                                    message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+                                } else {
+                                    voiceChannel.join().then(connection => {
+                                        const dispatcher = connection.playFile('./Bob_brain/resources/gio.mp3');
+                                        dispatcher.setVolume(0.5);
+                                        dispatcher.on("end", end => {
+                                            voiceChannel.leave();
+                                        });
+                                    }).catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+                                break;
+
+                            case "araleo":
+                                var voiceChannel = message.member.voiceChannel;
+                                nombre = message.member.id;
+                                if (voiceChannel == undefined) {
+                                    message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+                                } else {
+                                    voiceChannel.join().then(connection => {
+                                        const dispatcher = connection.playFile('./Bob_brain/resources/araleo.wav');
+                                        dispatcher.setVolume(10);
+                                        dispatcher.on("end", end => {
+                                            voiceChannel.leave();
+                                        });
+                                    }).catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+                                break;
+
+                            case "cute":
+                                var voiceChannel = message.member.voiceChannel;
+                                nombre = message.member.id;
+                                if (voiceChannel == undefined) {
+                                    message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+                                } else {
+                                    voiceChannel.join().then(connection => {
+                                        const dispatcher = connection.playFile('./Bob_brain/sound/pudi.mp3');
+                                        dispatcher.setVolume(0.7);
+                                        dispatcher.on("end", end => {
+                                            voiceChannel.leave();
+                                        });
+                                    }).catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+                                break;
+                            case "culture":
+
+                                var voiceChannel = message.member.voiceChannel;
+                                nombre = message.member.id;
+                                if (voiceChannel == undefined) {
+                                    message.channel.send("<@" + nombre + ">: " + "No puedo saber donde estas pendejo");
+                                } else {
+                                    voiceChannel.join().then(connection => {
+                                        const dispatcher = connection.playFile('./Bob_brain/resources/blank.mp3');
+                                        dispatcher.setVolume(0.4);
+                                        dispatcher.on("end", end => {
+                                            voiceChannel.leave();
+                                        });
+                                    }).catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+
+
+
+                                break;
+                        }
+                    } else {
+                        message.channel.send("<@" + nombre + ">: " + "No es el formato correcto");
+                    }
+                }
                 break;
-
         }
     } else {
         message.channel.send("```Por favor usa .registrarse para poder usar comandos ```:smile:");
@@ -582,7 +612,6 @@ botTel.on("message", async message => {
                 const user = await ((await bd.buscar('usuarios', {
                     usernameDis: args[1]
                 })).resultado[0])
-                console.log('Usuario encontrado', user);
                 bd.editar('usuarios', {
                     "id": user.id,
                     "usernameDis": user.usernameDis,
@@ -598,9 +627,6 @@ botTel.on("message", async message => {
             if ((await bd.buscar('usuarios', {
                     usernameTel: message.from.username
                 })).resultado[0].idDis == "") {
-                console.log("entro aqui", (await bd.buscar('usuarios', {
-                    usernameTel: message.from.username
-                })).resultado[0])
 
                 const overwrite = (await bd.buscar('usuarios', {
                     usernameTel: message.from.username
@@ -622,11 +648,11 @@ botTel.on("message", async message => {
 
                     break;
 
-                case "identificar":
-                    console.log(bd.identificarIdTel('usuarios', {
-                        usernameTel: message.from.username
-                    }, String(message.from.id)).then(res => console.log(res)))
-                    break;
+                    // case "identificar":
+                    //     console.log(bd.identificarIdTel('usuarios', {
+                    //         usernameTel: message.from.username
+                    //     }, String(message.from.id)).then(res => console.log(res)))
+                    //     break;
 
                 case "help":
                     const opcionesAyuda = args.join(" ");
@@ -693,7 +719,7 @@ botTel.on("message", async message => {
 
                         if (cat === '"cumple"') {
 
-                            bd.insertar('cumpleaños', JSON.parse(json_cumple));
+                            bd.insertar('cumples', JSON.parse(json_cumple));
                             botTel.sendMessage(message.chat.id, "¡He creado la cuenta atras!");
 
 
@@ -718,7 +744,7 @@ botTel.on("message", async message => {
 
                         case "cumples":
 
-                            const cumples = await bd.buscar('cumpleaños');
+                            const cumples = await bd.buscar('cumples');
 
                             let cumplesDisplay = "";
                             for (let cumple of cumples.resultado) {
@@ -770,7 +796,7 @@ botTel.on("message", async message => {
                             }
 
                             botTel.sendMessage(message.chat.id, "Cumpleaños Guardados:");
-                            const cumples2 = await bd.buscar('cumpleaños');
+                            const cumples2 = await bd.buscar('cumples');
 
                             let cumplesDisplay2 = "";
                             for (let cumple of cumples2.resultado) {
@@ -798,7 +824,7 @@ botTel.on("message", async message => {
 
                     switch (cuentaAtras[0].toLowerCase()) {
                         case "cumple":
-                            let cumples = bd.buscar('cumpleaños')
+                            let cumples = bd.buscar('cumples')
                             let personas = "";
 
                             if (cuentaAtras[1] == undefined) {
@@ -818,10 +844,9 @@ botTel.on("message", async message => {
                                 break;
 
                             } else {
-                                let cumple = bd.buscar('cumpleaños', {
+                                let cumple = bd.buscar('cumples', {
                                     "persona": cuentaAtras[1]
                                 })
-                                console.log((await cumple).resultado[0].codw)
                                 var cadate = service.refactorDate((await cumple).resultado[0].codw);
 
                                 botTel.sendMessage(message.chat.id, "Quedan" + " ¡¡" + service.diasPara(today, cadate) + " " + "dias!!!");
@@ -1099,6 +1124,43 @@ botTel.on("message", async message => {
 // }
 
 //--------------------------------------Recordatorios, Cumpleaños y Eventos------------------------------------------------------------------
+
+function updateCumples() {
+    var today = new Date();
+    let currentyear = Number(today.getFullYear());
+    console.log("Dias para fin de año:" + service.diasPara(today, service.refactorDate("01/01/" + (currentyear + 1))));
+
+
+    fs.readJSON('./Bob_Brain/cumples.json').then(cumples => {
+        let auxJson = [];
+        for (let cumple of cumples) {
+            console.log("Comprobando cumpleaños")
+            // if (service.diasPara(today, service.refactorDate(cumple.codw)) == 0) {
+            //     //sistema de notificación de cumples
+            // }
+            if (service.diasPara(today, service.refactorDate(cumple.codw)) <= 0) {
+                var dias = cumple.codw.substring(0, 2);
+                var mes = cumple.codw.substring(3, 5);
+                var anio = (currentyear + 1);
+                auxJson.push({
+                    "codw": dias + "/" + mes + "/" + anio,
+                    "persona": cumple.persona,
+                    "id": cumple.id
+                })
+                console.log('Cumpleaños actualizado', cumple.persona);
+            } else {
+                auxJson.push({
+                    "codw": cumple.codw,
+                    "persona": cumple.persona,
+                    "id": cumple.id
+                })
+            }
+        }
+        fs.writeJSON('./Bob_Brain/cumples.json', auxJson)
+    })
+}
+
+
 // setInterval(function recuerdame() {
 //     var dir = './Bob_brain/recordatorios';
 
@@ -1141,33 +1203,6 @@ botTel.on("message", async message => {
 //     console.log("Recordatorios comprobados")
 // }, 1 * 60 * 1000);
 
-
-function cumples() {
-
-    var today = new Date();
-    let currentyear = Number(today.getFullYear());
-
-    console.log("Dias para fin de año:" + service.diasPara(today, service.refactorDate("01/01/" + (currentyear + 1))));
-
-    bd.buscar('cumpleaños').then(cumples => {
-        for (let cumple of cumples.resultado) {
-            // if (service.diasPara(today, service.refactorDate(cumple.codw)) == 0) {
-            //     //sistema de notificación de cumples
-            // }
-            if (service.diasPara(today, service.refactorDate(cumple.codw)) <= 0) {
-                var dias = cumple.codw.substring(0, 2);
-                var mes = String(Number(cumple.codw.substring(3, 5)) - 1)
-                var anio = (currentyear + 1);
-                console.log("Fecha Nueva", dias + "/" + mes + "/" + anio)
-                bd.editar('cumpleaños', cumple, {
-                    id: cumple.id,
-                    persona: cumple.persona,
-                    codw: dias + "/" + mes + "/" + anio
-                })
-            }
-        }
-    })
-}
 
 // async function eventos() {
 

@@ -57,9 +57,10 @@ lo suyo sería poner en esos catch alguna llamada a un sistema para avisar al ad
 ejemplo una llamada a alguna función de otra librería para enviar emails. Just sayin'...
 */
 
-const coleccionesDefinidas = ['usuarios', 'cumpleaños', 'eventos', 'recordatorios', ]; // Las que sea, según cada aplicación
-const intervaloDeSincronizacion = 5; // En segundos
+const coleccionesDefinidas = ['usuarios', 'cumples', 'eventos', 'recordatorios', ]; // Las que sea, según cada aplicación
+const intervaloDeSincronizacion = 3; // En segundos
 const carpetaBD = './Bob_Brain'; // la ruta parte del fichero donde esté este documento
+const init = false;
 
 
 
@@ -206,6 +207,7 @@ bd.buscar = async (coleccion, objetoCriterio, camposFiltro, buscarEnString) => {
     camposFiltro = [];
   }
   try {
+    console.log('colecciones de la bd', colecciones)
     if (!colecciones[coleccion]) {
       throw 'colección no encontrada en la BD';
     }
