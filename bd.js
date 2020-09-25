@@ -207,7 +207,6 @@ bd.buscar = async (coleccion, objetoCriterio, camposFiltro, buscarEnString) => {
     camposFiltro = [];
   }
   try {
-    console.log('colecciones de la bd', colecciones)
     if (!colecciones[coleccion]) {
       throw 'colección no encontrada en la BD';
     }
