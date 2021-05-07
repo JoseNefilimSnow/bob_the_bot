@@ -57,7 +57,7 @@ lo suyo sería poner en esos catch alguna llamada a un sistema para avisar al ad
 ejemplo una llamada a alguna función de otra librería para enviar emails. Just sayin'...
 */
 
-const coleccionesDefinidas = ['usuarios', 'cumples', 'eventos', 'recordatorios', ]; // Las que sea, según cada aplicación
+const coleccionesDefinidas = ['cumples']; // Las que sea, según cada aplicación
 const intervaloDeSincronizacion = 3; // En segundos
 const carpetaBD = './Bob_Brain'; // la ruta parte del fichero donde esté este documento
 const init = false;
@@ -247,12 +247,6 @@ bd.insertar = async (coleccion, objeto) => {
     }
     if (objetoClon.password) { // Si hay contraseña la encriptamos
       objetoClon.password = await bcrypt.hash(objetoClon.password, await bcrypt.genSalt(10));
-    }
-    if (objetoClon.idDis) { // Si hay contraseña la encriptamos
-      objetoClon.idDis = await bcrypt.hash(objetoClon.idDis, await bcrypt.genSalt(10));
-    }
-    if (objetoClon.idTel) { // Si hay contraseña la encriptamos
-      objetoClon.idTel = await bcrypt.hash(objetoClon.idTel, await bcrypt.genSalt(10));
     }
     colecciones[coleccion].push(objetoClon);
     ultimaModificacion[coleccion] = new Date().getTime();
