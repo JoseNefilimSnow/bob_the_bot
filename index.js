@@ -51,7 +51,6 @@ botTel.on("ready", () => {
 
 //---------------------------------------------- Telegram--------------------------------------------
 botTel.on("message", async message => {
-    console.log(message.chat.id)
     if (message.text != undefined) {
         if (message.text.indexOf(configTel.prefix) !== 0) return;
 
@@ -68,7 +67,7 @@ botTel.on("message", async message => {
                 const opcionesAyuda = args.join(" ");
                 switch (opcionesAyuda) {
                     default:
-                        botTel.sendMessage(message.chat.id, "Mis comandos son: \n crearcumples \n vercumples \n Puedes saber mas de cada uno usando 'help' + comando");
+                        botTel.sendMessage(message.chat.id, "Mis comandos son: \n crearcumple \n vercumple \n Puedes saber mas de cada uno usando 'help' + comando");
                         break;
 
                     case "crearcumple":
@@ -76,7 +75,7 @@ botTel.on("message", async message => {
                         break;
 
                     case "vercumple":
-                        botTel.sendMessage(message.chat.id, "Este comando muestra una lista de todos los cumpleaños o devuelve uno en concreto añadiendo el nombre tras el comando");
+                        botTel.sendMessage(message.chat.id, "Este comando muestra una lista de todos los cumpleaños");
                         break;
                 }
                 break;
