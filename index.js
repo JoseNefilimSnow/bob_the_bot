@@ -132,13 +132,11 @@ botTel.on("message", async message => {
 function checkBday() {
     console.log("Checkeo cumples");
     bd.buscar("cumples").then(listaCumples => {
-        console.log("Checkeo cumples");
+        console.log("Checkeo cumples :^] ");
         if (listaCumples.resultado) {
             listaCumples.resultado.forEach(cumple => {
                 let dia = cumple.fecha.substring(0, 2);
-                console.log("Dia: ", dia)
                 let mes = cumple.fecha.substring(3, 5);
-                console.log("mes: ", mes)
                 let hoy = new Date();
                 if (dia == hoy.getDate() && mes == hoy.getMonth() + 1 && 6 == hoy.getHours()) {
                     botTel.sendMessage("-1001268069702", "Feliz Cumpleaños  ...  " + cumple.nombre.toUpperCase());
