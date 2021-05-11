@@ -34,7 +34,6 @@ botDis.login(process.env.TOKEN_DISCORD);
 
 //Iniciamos el bot en Telegram
 setInterval(() => {
-    console.log("pene")
     checkBday();
 }, 3600000)
 
