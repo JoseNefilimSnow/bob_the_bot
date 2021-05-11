@@ -1,11 +1,11 @@
 var https = require('https');
 module.exports = {
 
-    diasPara: function (a, b) {
-            var date1_ms = a.getTime();
-            var date2_ms = b.getTime();
+    diasPara: function (dateToSeek) {
+            var today_ms = new Date().getTime();
+            var date2_ms = dateToSeek.getTime();
             var milisegundosPorDia = 1000 * 60 * 60 * 24;
-            var dif_ms = date2_ms - date1_ms;
+            var dif_ms = date2_ms - today_ms;
             return Math.round(dif_ms / milisegundosPorDia);
         }
 
