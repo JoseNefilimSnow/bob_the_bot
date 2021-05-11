@@ -116,7 +116,11 @@ botTel.on("message", async message => {
                     resQuerry.resultado.forEach(cumple => {
                         listaCumples += "Cumple obtenido: " + cumple.nombre + " || " + cumple.fecha + "\n"
                     });
-                    botTel.sendMessage(message.chat.id, "Lista de cumples :" + "\n" + listaCumples);
+                    if (listaCumples) {
+                        botTel.sendMessage(message.chat.id, "Lista de cumples :" + "\n" + listaCumples);
+                    } else {
+                        botTel.sendMessage(message.chat.id, "No se encuentran cumpleaños guardados");
+                    }
                     break;
                 } catch (error) {
                     botTel.sendMessage(message.chat.id, "Ha habido un error obteniendo la lista");
