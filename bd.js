@@ -150,7 +150,7 @@ const guardarBD = () => { // colecciones = objeto con la BD cargada
 /* ****** */
 
 const inicio = async () => {
-  await asegurarQueLosArchivosBDExisten();
+  // await asegurarQueLosArchivosBDExisten();
   await cargarBD();
   setInterval(() => {
     guardarBD();
