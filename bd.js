@@ -59,7 +59,7 @@ ejemplo una llamada a alguna función de otra librería para enviar emails. Just
 
 const coleccionesDefinidas = ['cumples']; // Las que sea, según cada aplicación
 const intervaloDeSincronizacion = 3; // En segundos
-const carpetaBD = __dirname + '/Bob_Brain'; // la ruta parte del fichero donde esté este documento
+const carpetaBD = path.join(__dirname, 'Bob_Brain'); // la ruta parte del fichero donde esté este documento
 const init = false;
 
 
