@@ -67,11 +67,7 @@ botTel.on("message", async message => {
                 const opcionesAyuda = args.join(" ");
                 switch (opcionesAyuda) {
                     default:
-                        botTel.sendMessage(message.chat.id, "Mis comandos son: \n crearcumple \n vercumple \n Puedes saber mas de cada uno usando 'help' + comando");
-                        break;
-
-                    case "crearcumple":
-                        botTel.sendMessage(message.chat.id, "Puedes crear una entrada en la lista de cumpleaños usando el comando + '| nombre | fecha(dd/mm)' ");
+                        botTel.sendMessage(message.chat.id, "Mis comandos son: \n vercumple \n Puedes saber mas de cada uno usando 'help' + comando");
                         break;
 
                     case "vercumple":
